@@ -1,6 +1,6 @@
 package emru
 
 type todo struct {
-	list       []*list
+	lists      []*list
 	activeList *list
 }

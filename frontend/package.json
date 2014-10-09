@@ -1,0 +1,27 @@
+{
+  "name": "emru",
+  "version": "0.0.1",
+  "description": "Today's Todo list",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zidoms/emru.git"
+  },
+  "keywords": [
+    "Todo",
+    "Todo list"
+  ],
+  "author": "zidom72@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zidoms/emru/issues"
+  },
+  "homepage": "https://github.com/zidoms/emru",
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-node-webkit-builder": "latest"
+  }
+}
