@@ -1,15 +1,29 @@
 module.exports = function (grunt) {
 	grunt.initConfig({
+		jshint: {
+			all: ['Gruntfile.js', 'app/*.js']
+		},
+		compass: {
+			dist: {
+				options: {
+					basePath: 'app/styles',
+					config: 'app/styles/config.rb'
+				}
+			}
+		},
 		nodewebkit: {
 			options: {
-				version: '0.10.0',
-				buildDir: './build',
+				version: 'latest',
+				buildDir: './bin',
 				platforms: ['linux64']
 			},
-			src: './*'
+			src: './app/**/*'
 		},
 	});
 
 	grunt.loadNpmTasks('grunt-node-webkit-builder');
-	grunt.registerTask('default', ['nodewebkit']);
-}
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-compass');
+
+	grunt.registerTask('build', ['compass', 'nodewebkit']);
+};
