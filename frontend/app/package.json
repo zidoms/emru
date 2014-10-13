@@ -7,7 +7,20 @@
     "To-do",
     "To-do List"
   ],
-  "window": {},
+  "window": {
+    "title": "فهرست کارهای امروز",
+    "icon": "",
+    "toolbar": false,
+    "frame": true,
+    "position": "center",
+    "width": 350,
+    "height": 500,
+    "min_width": 350,
+    "min_height": 450,
+    "resizable": true,
+    "always-on-top": false,
+    "fullscreen": false
+  },
   "webkit": {
     "plugin": true
   },

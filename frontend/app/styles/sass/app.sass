@@ -1,1 +1,40 @@
 @import base
+
+html
+	direction: rtl
+	font-size: 10px
+	color: #fff
+	+default-font
+
+body
+	background-color: #282b2e
+
+header
+	+clearfix
+	background-color: #242527
+	border-bottom: 1px solid #1b1b1d
+	padding: 12px
+
+a
+	text-decoration: none
+	&.hover-link:hover
+		cursor: pointer
+
+header
+	font-size: 1.7em
+	#title
+		+title-font
+		+float-right
+
+#actions
+	+float-left
+	+inline-list
+
+main
+	font-size: 2em
+	border-top: 1px solid #313639
+
+#list
+	.task
+		padding: 12px
+		border-bottom: 1px solid #313639

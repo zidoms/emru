@@ -1,7 +1,12 @@
 module.exports = function (grunt) {
 	grunt.initConfig({
-		jshint: {
-			all: ['Gruntfile.js', 'app/*.js']
+		nodewebkit: {
+			options: {
+				version: 'latest',
+				buildDir: './bin',
+				platforms: ['linux64']
+			},
+			src: './app/**/*'
 		},
 		compass: {
 			dist: {
@@ -11,19 +16,21 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		nodewebkit: {
-			options: {
-				version: 'latest',
-				buildDir: './bin',
-				platforms: ['linux64']
+		jshint: {
+			all: ['Gruntfile.js', 'app/*.js']
+		},
+		watch: {
+			scripts: {
+				files: ['app/styles/sass/*'],
+				tasks: ['compass'],
 			},
-			src: './app/**/*'
 		},
 	});
 
 	grunt.loadNpmTasks('grunt-node-webkit-builder');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-compass');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	grunt.registerTask('build', ['compass', 'nodewebkit']);
 };
