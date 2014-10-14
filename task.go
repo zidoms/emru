@@ -17,8 +17,14 @@ type (
 	status bool
 )
 
-func newTask(title, body string) *task {
-	t := &task{title, body, false}
-	t.actions[0] = NewAction(t)
+func newTask(title, body string) (t *task) {
+	t = &task{title: title, body: body, done: false}
+	t.actions[0] = newAction(*t)
 	t.createdAt = time.Now()
+
+	return
+}
+
+func (s *status) toggle() {
+	*s = !(*s)
 }

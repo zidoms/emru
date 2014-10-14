@@ -1,13 +1,24 @@
 package emru
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 // Today's todo list
 type list struct {
-	tasks []*task
+	tasks []task
 	date  time.Time
+	lock  sync.Mutex
 }
 
 func newList() *list {
-	return &list{nil, time.Now()}
+	return &list{tasks: nil, date: time.Now()}
+}
+
+func (l *list) addTask(t task) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
+	l.tasks = append(l.tasks, t)
 }
