@@ -26,5 +26,8 @@
   },
   "devDependencies": {
     "gulp": "^3.8.8"
+  },
+  "dependencies": {
+    "jquery": "^2.1.1"
   }
 }

@@ -20,6 +20,13 @@ a
   &.hover-link:hover
     cursor: pointer
 
+.action
+  opacity: 0.6
+  &:hover
+    opacity: 1
+  &.active
+    opacity: 1
+
 header
   font-size: 1.7em
   #title
@@ -28,24 +35,58 @@ header
   #actions
     +float-left
     +inline-list
+    .action
+      margin: 0 0.2em
 
 main
   font-size: 2em
   border-top: 1px solid #313639
 
-.action
-  font-size: 15px
+#add
+  padding: 0 20px 0 5px
+  border-bottom: 1px solid #313639
+  background-color: #313639
+  display: none
+  input
+    +default-font
+    +reset-box-model
+    +reset-focus
+    width: 100%
+    color: #fff
+    padding: 8px 0
+    background-color: #313639
+    font-size: 1.6em
 
 #list
   .task
-    padding: 12px
     border-bottom: 1px solid #313639
+    &.done
+      opacity: 0.4
+      .title
+        text-decoration: line-through
+    .actions
+      +inline-list
     .main
+      padding: 12px
       +clearfix
       .title
         +float-right
       .actions
+        display: none
+        font-size: 0.8em
         +float-left
-        +inline-list
+        &.active
+          display: block
+        .action
+          margin: 0 0.2em
+    &:hover
+      .actions
+        display: block
     .etc
-      +inline-list
+      background: #1a1b1d
+      text-align: center
+      padding: 2px 0
+      display: none
+      &.active
+        display: block
+
