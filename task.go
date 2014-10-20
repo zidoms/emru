@@ -1,6 +1,10 @@
 package emru
 
-import "time"
+import (
+	"encoding/json"
+	"fmt"
+	"time"
+)
 
 type (
 	task struct {
@@ -17,14 +21,31 @@ type (
 	status bool
 )
 
-func newTask(title, body string) (t *task) {
-	t = &task{title: title, body: body, done: false}
-	t.actions[0] = newAction(*t)
-	t.createdAt = time.Now()
+func NewTask(title, body string) *task {
+	t := &task{
+		title:     title,
+		body:      body,
+		done:      false,
+		actions:   make([]*action, 0),
+		createdAt: time.Now(),
+	}
+	t.actions = append(t.actions, newAction(*t))
 
-	return
+	return t
 }
 
-func (s *status) toggle() {
+func (t *task) String() string {
+	return fmt.Sprintf("Title: %s, Body: %s", t.title, t.body)
+}
+
+func (t *task) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Title string `json:"title"`
+	}{
+		t.title,
+	})
+}
+
+func (s *status) Toggle() {
 	*s = !(*s)
 }

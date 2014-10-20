@@ -1,25 +1,20 @@
-var gui = require('nw.gui'), port = gui.App.argv[0],
-	WebSocket = require('ws'), ws = new WebSocket('ws://localhost:' + port),
-	JDate = require('jalali-date'), jdate = new JDate(),
-	persianJs = require('persianjs'), $ = require('jquery');
+var gui = require('nw.gui'), JDate = require('jalali-date'),
+	jdate = new JDate(), persianJs = require('persianjs'),
+	sprintf = require("sprintf-js").sprintf, $ = require('jquery');
 
-function fetchList() {
-	// body...
-}
+var task = '<li class="task"><div class="main"><div class="title">%s</div><ul class="actions"><li class="action"><a class="hover-link icon-edit"></a></li><li class="action"><a class="hover-link icon-done"></a></li></ul></div><div class="etc"><ul class="actions"><li class="action"><a class="hover-link icon-cancel"></a></li><li class="action"><a class="hover-link icon-move-down"></a></li><li class="action"><a class="hover-link icon-move-up"></a></li></ul></div></li>';
 
 $('#title').html(persianJs(jdate.format('dddd DD MMMM')).englishNumber().toString());
-$(window).load();
 $('body').on('click', '.icon-add', function(e) {
 	e.stopPropagation();
 	$(this).parent('.action').toggleClass('active');
 	$('#add').slideToggle(200);
+	$('#add input').focus();
 });
 $('body').on('keyup', '#add input', function(e) {
 	e.stopPropagation();
 	if (e.keyCode == 13) {
-		newTask = $('.task:first-child').clone().removeClass('done');
-		newTask.find('.title').html($(this).val());
-		$('#list').prepend(newTask);
+		$('#list').prepend(sprintf(task, $(this).val()));
 		$('#add').slideToggle(200);
 		$('.icon-add').parent('.action').toggleClass('active');
 		$(this).val('');
