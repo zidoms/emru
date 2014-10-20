@@ -6,17 +6,17 @@ import (
 )
 
 // Today's todo list
-type list struct {
+type List struct {
 	tasks []task
 	date  time.Time
 	lock  sync.Mutex
 }
 
-func newList() *list {
-	return &list{tasks: nil, date: time.Now()}
+func NewList() *List {
+	return &List{tasks: nil, date: time.Now()}
 }
 
-func (l *list) addTask(t task) {
+func (l *List) AddTask(t task) {
 	l.lock.Lock()
 	defer l.lock.Unlock()
 

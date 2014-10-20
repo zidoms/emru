@@ -1,15 +1,27 @@
-var $ = require('jquery');
+var gui = require('nw.gui'), port = gui.App.argv[0],
+	WebSocket = require('ws'), ws = new WebSocket('ws://localhost:' + port),
+	JDate = require('jalali-date'), jdate = new JDate(),
+	persianJs = require('persianjs'), $ = require('jquery');
+
+function fetchList() {
+	// body...
+}
+
+$('#title').html(persianJs(jdate.format('dddd DD MMMM')).englishNumber().toString());
+$(window).load();
 $('body').on('click', '.icon-add', function(e) {
 	e.stopPropagation();
+	$(this).parent('.action').toggleClass('active');
 	$('#add').slideToggle(200);
 });
 $('body').on('keyup', '#add input', function(e) {
 	e.stopPropagation();
 	if (e.keyCode == 13) {
-		newTask = $('.task:first-child').clone();
+		newTask = $('.task:first-child').clone().removeClass('done');
 		newTask.find('.title').html($(this).val());
 		$('#list').prepend(newTask);
 		$('#add').slideToggle(200);
+		$('.icon-add').parent('.action').toggleClass('active');
 		$(this).val('');
 	}
 });
@@ -45,7 +57,7 @@ $('body').on('click', '.icon-move-down', function(e) {
 	Swap(task, swap);
 });
 
-function Swap (task, swap) {
+function Swap(task, swap) {
 	var cur   = task.html(),
 		cClss = task.attr('class'),
 		swp   = swap.html();

@@ -16,7 +16,7 @@
     "width": 350,
     "height": 500,
     "min_width": 350,
-    "min_height": 450,
+    "min_height": 500,
     "resizable": true,
     "always-on-top": false,
     "fullscreen": false
@@ -28,6 +28,9 @@
     "gulp": "^3.8.8"
   },
   "dependencies": {
-    "jquery": "^2.1.1"
+    "jalali-date": "^0.1.5",
+    "jquery": "^2.1.1",
+    "persianjs": "^0.3.0",
+    "ws": "^0.4.32"
   }
 }
