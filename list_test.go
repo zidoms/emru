@@ -51,6 +51,16 @@ func TestTasks(t *testing.T) {
 	}
 }
 
+func TestClearList(t *testing.T) {
+	l := NewList()
+	t1 := NewTask("Task Title", "Task Body")
+	l.AddTask(t1)
+	l.Clear()
+	if len(l.Tasks()) != 0 {
+		t.Errorf("Expected tasks be empty but has %d members", len(l.Tasks()))
+	}
+}
+
 func TestMarshalJsonList(t *testing.T) {
 	l := NewList()
 	t1 := NewTask("Task Title", "Task Body")
@@ -59,7 +69,7 @@ func TestMarshalJsonList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Couldn't marshal list: %s", err)
 	}
-	if string(b) != `{"tasks":[{"title":"Task Title","body":"Task Body"}]}` {
-		t.Errorf("Expected marshaled json %s, but got %s", string(b), `{"tasks":[{"title":"Task Title","body":"Task Body"}]}`)
+	if string(b) != `{"Tasks":[{"Title":"Task Title","Body":"Task Body"}]}` {
+		t.Errorf("Expected marshaled json %s, but got %s", string(b), `{"tasks":[{"Title":"Task Title","Body":"Task Body"}]}`)
 	}
 }

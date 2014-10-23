@@ -1,19 +1,22 @@
 package main
 
 import (
-	"code.google.com/p/go.net/websocket"
-	"encoding/json"
-	"github.com/zidoms/emru"
+	// "encoding/json"
 	"net/http"
 	"os/exec"
+
+	"github.com/bmizerany/pat"
+	"github.com/zidoms/emru"
 )
 
-var list *emru.List
+var list = emru.NewList()
 
 func main() {
-	list = emru.NewList()
-
-	http.Handle("/", websocket.Handler(wsHandler))
+	r := pat.New()
+	r.Get("/", http.HandlerFunc(getList))
+	r.Post("task", http.HandlerFunc(newTask))
+	r.Post("task/:id", http.HandlerFunc(updateTask))
+	http.Handle("/", r)
 	go http.ListenAndServe(":4040", nil)
 
 	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./app", "4040").Output()
@@ -22,14 +25,14 @@ func main() {
 	}
 }
 
-func wsHandler(ws *websocket.Conn) {
-	var msg string
-	for {
-		if err := websocket.Message.Receive(ws, &msg); err != nil {
-			panic(err)
-			continue
-		}
-		res, _ := json.Marshal(list)
-		websocket.Message.Send(ws, string(res))
-	}
+func getList(w http.ResponseWriter, req *http.Request) {
+
+}
+
+func newTask(w http.ResponseWriter, req *http.Request) {
+
+}
+
+func updateTask(w http.ResponseWriter, req *http.Request) {
+
 }

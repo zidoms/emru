@@ -34,14 +34,22 @@ func NewTask(title, body string) *task {
 	return t
 }
 
+func (t *task) Title() string {
+	return t.title
+}
+
+func (t *task) Body() string {
+	return t.body
+}
+
 func (t *task) String() string {
 	return fmt.Sprintf("Title: %s, Body: %s", t.title, t.body)
 }
 
 func (t *task) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Title string `json:"title"`
-		Body  string `json:"body"`
+		Title string `json:"Title"`
+		Body  string `json:"Body"`
 	}{
 		t.title,
 		t.body,

@@ -9,12 +9,6 @@ html
 body
   background-color: #282b2e
 
-header
-  +clearfix
-  background-color: #242527
-  border-bottom: 1px solid #1b1b1d
-  padding: 12px
-
 a
   text-decoration: none
   &.hover-link:hover
@@ -29,6 +23,10 @@ a
 
 header
   font-size: 1.7em
+  background-color: #242527
+  border-bottom: 1px solid #1b1b1d
+  padding: 12px
+  +clearfix
   #title
     +title-font
     +float-right
@@ -55,7 +53,7 @@ main
     color: #fff
     padding: 8px 0
     background-color: #313639
-    font-size: 1.6em
+    font-size: 1.3em
 
 #list
   .task

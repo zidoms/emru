@@ -31,9 +31,15 @@ func (l *List) Tasks() []*task {
 	return r
 }
 
+func (l *List) Clear() {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	l.tasks = nil
+}
+
 func (l *List) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Tasks []*task `json:"tasks"`
+		Tasks []*task `json:"Tasks"`
 	}{
 		l.tasks,
 	})
