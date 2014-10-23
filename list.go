@@ -33,7 +33,7 @@ func (l *List) Tasks() []*task {
 
 func (l *List) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Tasks []*task `json:"Tasks"`
+		Tasks []*task `json:"tasks"`
 	}{
 		l.tasks,
 	})

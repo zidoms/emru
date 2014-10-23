@@ -41,8 +41,10 @@ func (t *task) String() string {
 func (t *task) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Title string `json:"title"`
+		Body  string `json:"body"`
 	}{
 		t.title,
+		t.body,
 	})
 }
 
