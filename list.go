@@ -23,6 +23,20 @@ func (l *List) AddTask(t *task) {
 	l.tasks = append(l.tasks, t)
 }
 
+func (l *List) RemoveTaskByIndex(i int) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	if e := len(l.tasks) - 1; i != e {
+		copy(l.tasks[i:], l.tasks[i+1:])
+	} else {
+		l.tasks = l.tasks[:e]
+	}
+}
+
+func (l *List) GetTask(i int) *task {
+	return l.tasks[i]
+}
+
 func (l *List) Tasks() []*task {
 	l.lock.Lock()
 	defer l.lock.Unlock()

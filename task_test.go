@@ -7,11 +7,11 @@ import (
 
 func TestNewTask(t *testing.T) {
 	task := NewTask("test", "body")
-	if task.title != "test" {
-		t.Errorf("Expected task title %s, but got %s", "test", task.title)
+	if task.Title != "test" {
+		t.Errorf("Expected task title %s, but got %s", "test", task.Title)
 	}
-	if task.body != "body" {
-		t.Errorf("Expected task body %s, but got %s", "body", task.body)
+	if task.Body != "body" {
+		t.Errorf("Expected task body %s, but got %s", "body", task.Body)
 	}
 	if task.done {
 		t.Errorf("Expected task status %v, but got %v", false, task.done)
@@ -39,11 +39,11 @@ func TestMarshalJsonTask(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Couldn't unmarshal: %s", err)
 	}
-	if v["Title"] != task.title {
-		t.Errorf("Expected title %s, but got %s", task.title, v["Title"])
+	if v["Title"] != task.Title {
+		t.Errorf("Expected title %s, but got %s", task.Title, v["Title"])
 	}
-	if v["Body"] != task.body {
-		t.Errorf("Expected body %s, but got %s", task.body, v["Body"])
+	if v["Body"] != task.Body {
+		t.Errorf("Expected body %s, but got %s", task.Body, v["Body"])
 	}
 }
 

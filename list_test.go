@@ -30,12 +30,22 @@ func TestAddTask(t *testing.T) {
 	for i, test := range tests {
 		task := NewTask(test.title, test.body)
 		l.AddTask(task)
-		if l.tasks[i].title != test.title {
-			t.Errorf("Test %d: Expected task title %s, but got %s", test.title, l.tasks[i].title)
+		if l.tasks[i].Title != test.title {
+			t.Errorf("Test %d: Expected task title %s, but got %s", test.title, l.tasks[i].Title)
 		}
-		if l.tasks[i].body != test.body {
-			t.Errorf("Test %d: Expected task body %s, but got %s", test.body, l.tasks[i].body)
+		if l.tasks[i].Body != test.body {
+			t.Errorf("Test %d: Expected task body %s, but got %s", test.body, l.tasks[i].Body)
 		}
+	}
+}
+
+func TestRemoveTaskByIndex(t *testing.T) {
+	l := NewList()
+	t1 := NewTask("Task Title", "Task Body")
+	l.AddTask(t1)
+	l.RemoveTaskByIndex(0)
+	if len(l.Tasks()) != 0 {
+		t.Errorf("Expected tasks be empty but has %d members", len(l.Tasks()))
 	}
 }
 

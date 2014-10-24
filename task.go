@@ -1,15 +1,14 @@
 package emru
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 )
 
 type (
 	task struct {
-		title     string
-		body      string
+		Title     string `json:"Title"`
+		Body      string `json:"Body"`
 		done      status
 		reminder  time.Time
 		actions   []*action // Keeps task history
@@ -23,8 +22,8 @@ type (
 
 func NewTask(title, body string) *task {
 	t := &task{
-		title:     title,
-		body:      body,
+		Title:     title,
+		Body:      body,
 		done:      false,
 		actions:   make([]*action, 0),
 		createdAt: time.Now(),
@@ -34,26 +33,8 @@ func NewTask(title, body string) *task {
 	return t
 }
 
-func (t *task) Title() string {
-	return t.title
-}
-
-func (t *task) Body() string {
-	return t.body
-}
-
 func (t *task) String() string {
-	return fmt.Sprintf("Title: %s, Body: %s", t.title, t.body)
-}
-
-func (t *task) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Title string `json:"Title"`
-		Body  string `json:"Body"`
-	}{
-		t.title,
-		t.body,
-	})
+	return fmt.Sprintf("Title: %s, Body: %s", t.Title, t.Body)
 }
 
 func (s *status) Toggle() {
