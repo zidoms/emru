@@ -39,11 +39,11 @@ func TestMarshalJsonTask(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Couldn't unmarshal: %s", err)
 	}
-	if v["Title"] != task.Title {
-		t.Errorf("Expected title %s, but got %s", task.Title, v["Title"])
+	if v["title"] != task.Title {
+		t.Errorf("Expected title %s, but got %s", task.Title, v["title"])
 	}
-	if v["Body"] != task.Body {
-		t.Errorf("Expected body %s, but got %s", task.Body, v["Body"])
+	if v["body"] != task.Body {
+		t.Errorf("Expected body %s, but got %s", task.Body, v["body"])
 	}
 }
 

@@ -7,8 +7,8 @@ import (
 
 type (
 	task struct {
-		Title     string `json:"Title"`
-		Body      string `json:"Body"`
+		Title     string `json:"title"`
+		Body      string `json:"body"`
 		done      status
 		reminder  time.Time
 		actions   []*action // Keeps task history

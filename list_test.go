@@ -79,7 +79,7 @@ func TestMarshalJsonList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Couldn't marshal list: %s", err)
 	}
-	if string(b) != `{"Tasks":[{"Title":"Task Title","Body":"Task Body"}]}` {
-		t.Errorf("Expected marshaled json %s, but got %s", string(b), `{"tasks":[{"Title":"Task Title","Body":"Task Body"}]}`)
+	if string(b) != `{"tasks":[{"title":"Task Title","body":"Task Body"}]}` {
+		t.Errorf("Expected marshaled json %s, but got %s", string(b), `{"tasks":[{"title":"Task Title","body":"Task Body"}]}`)
 	}
 }

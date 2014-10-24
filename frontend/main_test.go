@@ -20,15 +20,15 @@ func TestGetList(t *testing.T) {
 	if w.Code != 200 {
 		t.Errorf("Expected response code 200, but got %d", w.Code)
 	}
-	if w.Body.String() != `{"Tasks":[{"Title":"Test","Body":"Server test"}]}` {
-		t.Errorf("Expected response body %s, but got %s", `{"Tasks":[{"Title":"Test","Body":"Server test"}]}`, w.Body.String())
+	if w.Body.String() != `{"tasks":[{"title":"Test","body":"Server test"}]}` {
+		t.Errorf("Expected response body %s, but got %s", `{"tasks":[{"title":"Test","body":"Server test"}]}`, w.Body.String())
 	}
 }
 
 func TestNewTask(t *testing.T) {
 	defer list.Clear()
 	w := httptest.NewRecorder()
-	buf := []byte(`{"Title":"Test","Body":"Server test"}`)
+	buf := []byte(`{"title":"Test","body":"Server test"}`)
 	req, err := http.NewRequest("POST", "http://localhost:4040/task", bytes.NewBuffer(buf))
 	if err != nil {
 		t.Fatalf("Creating NewRequest error: %s", err)
@@ -51,7 +51,7 @@ func TestUpdateTask(t *testing.T) {
 	list.AddTask(emru.NewTask("Test", "Server test"))
 	defer list.Clear()
 	w := httptest.NewRecorder()
-	buf := []byte(`{"Title":"Test update","Body":"Updated body"}`)
+	buf := []byte(`{"title":"Test update","body":"Updated body"}`)
 	req, err := http.NewRequest("PUT", "http://localhost:4040/task/0?:id=0", bytes.NewBuffer(buf))
 	if err != nil {
 		t.Fatalf("Creating NewRequest error: %s", err)
