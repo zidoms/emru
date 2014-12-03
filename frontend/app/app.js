@@ -2,6 +2,22 @@ var gui = require('nw.gui'), JDate = require('jalali-date'),
 	jdate = new JDate(), persianJs = require('persianjs'),
 	sprintf = require("sprintf-js").sprintf, $ = require('jquery');
 
+var win = gui.Window.get(),
+	tray = new gui.Tray({icon: 'icon/32/emru.png'}),
+	showing = true;
+
+win.on('close', function() {
+	win.hide();
+	showing = false;
+});
+tray.on('click', function() {
+	if (showing)
+		win.hide();
+	else
+		win.show();
+	showing = !showing;
+});
+
 var task = '<li class="task"><div class="main"><div class="title">%s</div><ul class="actions"><li class="action"><a class="hover-link icon-edit"></a></li><li class="action"><a class="hover-link icon-done"></a></li></ul></div><div class="etc"><ul class="actions"><li class="action"><a class="hover-link icon-cancel"></a></li><li class="action"><a class="hover-link icon-move-down"></a></li><li class="action"><a class="hover-link icon-move-up"></a></li></ul></div></li>';
 
 $('#title').html(persianJs(jdate.format('dddd DD MMMM')).englishNumber().toString());
