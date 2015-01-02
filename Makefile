@@ -2,7 +2,7 @@ PWD = $(shell pwd)
 NW  = $(PWD)/frontend/bin/emru/linux64
 INSTALL_FILE    = install -m 644 -p
 INSTALL_PROGRAM = install -m 755 -p
-INSTALL_TARGET  = /usr/lib/emru/
+INSTALL_TARGET  = /usr/lib/emru
 
 all:
 
@@ -12,6 +12,7 @@ install_lib:
 	-$(INSTALL_FILE) $(NW)/libffmpegsumo.so $(INSTALL_TARGET)
 	-$(INSTALL_PROGRAM) $(NW)/emru $(INSTALL_TARGET)
 install_bin:
+	rm /usr/bin/emru
 	ln -s $(INSTALL_TARGET)/emru /usr/bin/emru
 install_icons:
 	-$(INSTALL_FILE) $(PWD)/frontend/app/icon/128/emru.png /usr/share/icons/hicolor/128x128/apps/

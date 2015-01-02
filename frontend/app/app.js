@@ -4,7 +4,18 @@ var gui = require('nw.gui'), JDate = require('jalali-date'),
 
 var win = gui.Window.get(),
 	tray = new gui.Tray({icon: 'icon/32/emru.png'}),
+	menu = new gui.Menu(),
 	showing = true;
+
+menu.append(
+	new gui.MenuItem({
+		label: 'Quit',
+		click: function() {
+			gui.App.quit();
+		},
+	})
+);
+tray.menu = menu;
 
 win.on('close', function() {
 	win.hide();
