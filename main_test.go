@@ -2,14 +2,13 @@ package main
 
 import (
 	"bytes"
-	"github.com/zidoms/emru"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestGetList(t *testing.T) {
-	list.AddTask(emru.NewTask("Test", "Server test"))
+	list.AddTask(NewTask("Test", "Server test"))
 	defer list.Clear()
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "http://localhost:4040", nil)
@@ -25,7 +24,7 @@ func TestGetList(t *testing.T) {
 	}
 }
 
-func TestNewTask(t *testing.T) {
+func TestCreateNewTask(t *testing.T) {
 	defer list.Clear()
 	w := httptest.NewRecorder()
 	buf := []byte(`{"title":"Test","body":"Server test"}`)
@@ -48,7 +47,7 @@ func TestNewTask(t *testing.T) {
 }
 
 func TestUpdateTask(t *testing.T) {
-	list.AddTask(emru.NewTask("Test", "Server test"))
+	list.AddTask(NewTask("Test", "Server test"))
 	defer list.Clear()
 	w := httptest.NewRecorder()
 	buf := []byte(`{"title":"Test update","body":"Updated body"}`)
@@ -68,7 +67,7 @@ func TestUpdateTask(t *testing.T) {
 }
 
 func TestDeleteTask(t *testing.T) {
-	list.AddTask(emru.NewTask("Test", "Server test"))
+	list.AddTask(NewTask("Test", "Server test"))
 	defer list.Clear()
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("DELETE", "http://localhost:4040/task/0?:id=0", nil)

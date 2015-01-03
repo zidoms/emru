@@ -1,4 +1,4 @@
-package emru
+package main
 
 import "time"
 

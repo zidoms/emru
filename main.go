@@ -7,10 +7,9 @@ import (
 	"strconv"
 
 	"github.com/bmizerany/pat"
-	"github.com/zidoms/emru"
 )
 
-var list = emru.NewList()
+var list = NewList()
 
 func main() {
 	r := pat.New()
@@ -38,7 +37,7 @@ func getList(w http.ResponseWriter, req *http.Request) {
 
 func newTask(w http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	t := emru.NewTask("", "")
+	t := NewTask("", "")
 	if err := decoder.Decode(t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
