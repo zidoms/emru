@@ -28,7 +28,7 @@ func TestCreateNewTask(t *testing.T) {
 	defer list.clear()
 	w := httptest.NewRecorder()
 	buf := []byte(`{"title":"Test","body":"Server test"}`)
-	req, err := http.NewRequest("POST", "http://localhost:4040/task", bytes.NewBuffer(buf))
+	req, err := http.NewRequest("POST", "http://localhost:4040/tasks", bytes.NewBuffer(buf))
 	if err != nil {
 		t.Fatalf("Creating NewRequest error: %s", err)
 	}
@@ -51,7 +51,7 @@ func TestUpdateTask(t *testing.T) {
 	defer list.clear()
 	w := httptest.NewRecorder()
 	buf := []byte(`{"title":"Test update","body":"Updated body"}`)
-	req, err := http.NewRequest("PUT", "http://localhost:4040/task/0?:id=0", bytes.NewBuffer(buf))
+	req, err := http.NewRequest("PUT", "http://localhost:4040/tasks/0?:id=0", bytes.NewBuffer(buf))
 	if err != nil {
 		t.Fatalf("Creating NewRequest error: %s", err)
 	}
@@ -70,7 +70,7 @@ func TestDeleteTask(t *testing.T) {
 	list.AddTask(NewTask("Test", "Server test"))
 	defer list.clear()
 	w := httptest.NewRecorder()
-	req, err := http.NewRequest("DELETE", "http://localhost:4040/task/0?:id=0", nil)
+	req, err := http.NewRequest("DELETE", "http://localhost:4040/tasks/0?:id=0", nil)
 	if err != nil {
 		t.Fatalf("Creating NewRequest error: %s", err)
 	}

@@ -26,14 +26,15 @@ func main() {
 func serve() {
 	r := pat.New()
 	r.Get("/", http.HandlerFunc(getList))
-	r.Post("/task", http.HandlerFunc(newTask))
-	r.Put("/task/:id", http.HandlerFunc(updateTask))
-	r.Del("/task/:id", http.HandlerFunc(deleteTask))
+	r.Post("/tasks", http.HandlerFunc(newTask))
+	r.Put("/tasks/:id", http.HandlerFunc(updateTask))
+	r.Del("/tasks/:id", http.HandlerFunc(deleteTask))
 	http.Handle("/", r)
 	http.ListenAndServe(":4040", nil)
 }
 
 func getList(w http.ResponseWriter, req *http.Request) {
+	log.Finest("Recieved request for list")
 	if data, err := json.Marshal(list); err != nil {
 		http.Error(w, "Couldn't marshal list", http.StatusInternalServerError)
 	} else {
@@ -43,6 +44,7 @@ func getList(w http.ResponseWriter, req *http.Request) {
 }
 
 func newTask(w http.ResponseWriter, req *http.Request) {
+	log.Finest("Recieved request for new task %v", req.Body)
 	decoder := json.NewDecoder(req.Body)
 	t := NewTask("", "")
 	if err := decoder.Decode(t); err != nil {

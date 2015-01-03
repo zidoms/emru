@@ -1,6 +1,7 @@
 var gui = require('nw.gui'), JDate = require('jalali-date'),
 	jdate = new JDate(), persianJs = require('persianjs'),
-	sprintf = require("sprintf-js").sprintf, $ = require('jquery');
+	sprintf = require("sprintf-js").sprintf, $ = require('jquery'),
+	request = require('request');
 
 var win = gui.Window.get(),
 	tray = new gui.Tray({icon: 'icon/32/emru.png'}),
@@ -41,10 +42,24 @@ $('body').on('click', '.icon-add', function(e) {
 $('body').on('keyup', '#add input', function(e) {
 	e.stopPropagation();
 	if (e.keyCode == 13) {
-		$('#list').prepend(sprintf(task, $(this).val()));
-		$('#add').slideToggle(200);
-		$('.icon-add').parent('.action').toggleClass('active');
-		$(this).val('');
+		var options = {
+			uri: 'http://localhost:4040/tasks',
+			method: 'POST',
+			json: {
+				"title": $(this).val()
+			}
+		};
+
+		request(options, function(error, response, body) {
+			if (!error && response.statusCode == 200) {
+				$('#add').slideToggle(200);
+				$('.icon-add').parent('.action').toggleClass('active');
+				$(this).val('');
+
+				return;
+			}
+			console.log(error, response, body);
+		});
 	}
 });
 $('body').on('click', '.icon-done', function(e) {
