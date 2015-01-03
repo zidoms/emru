@@ -29,7 +29,7 @@ tray.on('click', function() {
 	showing = !showing;
 });
 
-var task = '<li class="task"><div class="main"><div class="title">%s</div><ul class="actions"><li class="action"><a class="hover-link icon-edit"></a></li><li class="action"><a class="hover-link icon-done"></a></li></ul></div><div class="etc"><ul class="actions"><li class="action"><a class="hover-link icon-cancel"></a></li><li class="action"><a class="hover-link icon-move-down"></a></li><li class="action"><a class="hover-link icon-move-up"></a></li></ul></div></li>';
+var task = '<li class="task"><div class="main"><div class="title">%s</div><ul class="actions"><li class="action"><a class="hover-link icon-done"></a></li><li class="action"><a class="hover-link icon-cancel"></a></li></ul></div></li>';
 
 $('#title').html(persianJs(jdate.format('dddd DD MMMM')).englishNumber().toString());
 $('body').on('click', '.icon-add', function(e) {
@@ -47,12 +47,6 @@ $('body').on('keyup', '#add input', function(e) {
 		$(this).val('');
 	}
 });
-$('body').on('click', '.icon-edit', function(e) {
-	e.stopPropagation();
-	$(this).parent('.action').toggleClass('active');
-	$(this).parents('.actions').toggleClass('active');
-	$(this).parents('.main').next('.etc').slideToggle(200);
-});
 $('body').on('click', '.icon-done', function(e) {
 	e.stopPropagation();
 	$(this).parent('.action').toggleClass('active');
@@ -63,20 +57,6 @@ $('body').on('click', '.icon-cancel', function(e) {
 	$(this).parents('.task').slideUp(300, function() {
 		$(this).remove();
 	});
-});
-$('body').on('click', '.icon-move-up', function(e) {
-	e.stopPropagation();
-	var task = $(this).parents('.task'),
-		swap = task.prev('.task');
-	if (task.is(':first-child')) return;
-	Swap(task, swap);
-});
-$('body').on('click', '.icon-move-down', function(e) {
-	e.stopPropagation();
-	var task = $(this).parents('.task'),
-		swap = task.next('.task');
-	if (task.is(':last-child')) return;
-	Swap(task, swap);
 });
 
 function Swap(task, swap) {
