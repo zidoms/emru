@@ -26,7 +26,7 @@ func loadList() *List {
 	var (
 		id          int
 		title, body string
-		done        status
+		done        bool
 		date        time.Time
 	)
 
@@ -41,9 +41,9 @@ func loadList() *List {
 		}
 		t := NewTask(title, body)
 		t.id = id
-		t.done = done
+		t.done = status(done)
 		t.createdAt = date
-		list.AddTask(t)
+		list.addTask(t)
 	}
 
 	return list
@@ -57,7 +57,8 @@ func (l *List) initDB() {
 	_, err = db.Exec(`
 		create table if not exists
 			tasks(id integer primary key autoincrement,
-			title, body varchar(255), status boolean, created_at datetime)
+			title, body varchar(255), done boolean default false,
+			created_at datetime default current_timestamp)
 	`)
 	if err != nil {
 		panic(err)
@@ -65,8 +66,20 @@ func (l *List) initDB() {
 	l.db = db
 }
 
-func (l *List) AddTask(t *task) {
+func (l *List) addTask(t *task) {
+	log.Finest("Adding task %s", t)
 	l.tasks = append(l.tasks, t)
+}
+
+func (l *List) AddTask(t *task) {
+	_, err := l.db.Exec(`
+		insert into tasks(title, body, done, created_at) values(?, ?, ?, ?)
+		`, t.Title, t.Body, bool(t.done), t.createdAt)
+	if err != nil {
+		log.Error("Couldn't insert task: %s", err)
+	} else {
+		l.addTask(t)
+	}
 }
 
 func (l *List) removeTaskByIndex(i int) {

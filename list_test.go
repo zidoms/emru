@@ -29,7 +29,7 @@ func TestAddTask(t *testing.T) {
 	l := newList()
 	for i, test := range tests {
 		task := NewTask(test.title, test.body)
-		l.AddTask(task)
+		l.addTask(task)
 		if l.tasks[i].Title != test.title {
 			t.Errorf("Test %d: Expected task title %s, but got %s", test.title, l.tasks[i].Title)
 		}

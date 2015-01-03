@@ -44,7 +44,7 @@ func getList(w http.ResponseWriter, req *http.Request) {
 }
 
 func newTask(w http.ResponseWriter, req *http.Request) {
-	log.Finest("Recieved request for new task %v", req.Body)
+	log.Finest("Recieved request for new task")
 	decoder := json.NewDecoder(req.Body)
 	t := NewTask("", "")
 	if err := decoder.Decode(t); err != nil {
