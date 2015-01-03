@@ -7,6 +7,7 @@ import (
 
 type (
 	task struct {
+		id        int
 		Title     string `json:"title"`
 		Body      string `json:"body"`
 		done      status

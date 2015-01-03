@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"time"
 
+	log "github.com/limetext/log4go"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// Today's todo list
 type List struct {
 	tasks []*task
 	db    *sql.DB
@@ -24,6 +24,7 @@ func loadList() *List {
 	list := newList()
 
 	var (
+		id          int
 		title, body string
 		done        status
 		date        time.Time
@@ -35,12 +36,14 @@ func loadList() *List {
 		panic(err)
 	}
 	for tasks.Next() {
-		if err = tasks.Scan(&title, &body, &done, &date); err == nil {
-			t := NewTask(title, body)
-			t.done = done
-			t.createdAt = date
-			list.AddTask(t)
+		if err = tasks.Scan(&id, &title, &body, &done, &date); err != nil {
+			log.Warn(err)
 		}
+		t := NewTask(title, body)
+		t.id = id
+		t.done = done
+		t.createdAt = date
+		list.AddTask(t)
 	}
 
 	return list
@@ -54,7 +57,7 @@ func (l *List) initDB() {
 	_, err = db.Exec(`
 		create table if not exists
 			tasks(id integer primary key autoincrement,
-			title, body varchar(255), status boolean, date datetime)
+			title, body varchar(255), status boolean, created_at datetime)
 	`)
 	if err != nil {
 		panic(err)

@@ -7,23 +7,30 @@ import (
 	"strconv"
 
 	"github.com/bmizerany/pat"
+	log "github.com/limetext/log4go"
 )
 
 var list = loadList()
 
 func main() {
+	log.AddFilter("console", log.FINEST, log.NewConsoleLogWriter())
+
+	go serve()
+
+	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./frontend/app", "4040").Output()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func serve() {
 	r := pat.New()
 	r.Get("/", http.HandlerFunc(getList))
 	r.Post("/task", http.HandlerFunc(newTask))
 	r.Put("/task/:id", http.HandlerFunc(updateTask))
 	r.Del("/task/:id", http.HandlerFunc(deleteTask))
 	http.Handle("/", r)
-	go http.ListenAndServe(":4040", nil)
-
-	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./frontend/app", "4040").Output()
-	if err != nil {
-		panic(err)
-	}
+	http.ListenAndServe(":4040", nil)
 }
 
 func getList(w http.ResponseWriter, req *http.Request) {
