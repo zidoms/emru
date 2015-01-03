@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"sync"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -12,32 +11,62 @@ import (
 // Today's todo list
 type List struct {
 	tasks []*task
-	date  time.Time
 	db    *sql.DB
-	lock  sync.Mutex
 }
 
 func newList() *List {
-	return &List{tasks: make([]*task, 0), date: time.Now()}
+	l := &List{tasks: make([]*task, 0)}
+	l.initDB()
+	return l
 }
 
-// func loadList() *List {
-// 	db, err := sql.Open("sqlite3", "emru.db")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	list := newList()
-// }
+func loadList() *List {
+	list := newList()
+
+	var (
+		title, body string
+		done        status
+		date        time.Time
+	)
+
+	tasks, err := list.db.Query("select * from tasks order by id desc")
+	defer tasks.Close()
+	if err != nil {
+		panic(err)
+	}
+	for tasks.Next() {
+		if err = tasks.Scan(&title, &body, &done, &date); err == nil {
+			t := NewTask(title, body)
+			t.done = done
+			t.createdAt = date
+			list.AddTask(t)
+		}
+	}
+
+	return list
+}
+
+func (l *List) initDB() {
+	db, err := sql.Open("sqlite3", "emru.db")
+	if err != nil {
+		panic(err)
+	}
+	_, err = db.Exec(`
+		create table if not exists
+			tasks(id integer primary key autoincrement,
+			title, body varchar(255), status boolean, date datetime)
+	`)
+	if err != nil {
+		panic(err)
+	}
+	l.db = db
+}
 
 func (l *List) AddTask(t *task) {
-	l.lock.Lock()
-	defer l.lock.Unlock()
 	l.tasks = append(l.tasks, t)
 }
 
 func (l *List) removeTaskByIndex(i int) {
-	l.lock.Lock()
-	defer l.lock.Unlock()
 	if e := len(l.tasks) - 1; i != e {
 		copy(l.tasks[i:], l.tasks[i+1:])
 	} else {
@@ -50,16 +79,12 @@ func (l *List) getTask(i int) *task {
 }
 
 func (l *List) Tasks() []*task {
-	l.lock.Lock()
-	defer l.lock.Unlock()
 	r := make([]*task, len(l.tasks))
 	copy(r, l.tasks)
 	return r
 }
 
 func (l *List) clear() {
-	l.lock.Lock()
-	defer l.lock.Unlock()
 	l.tasks = nil
 }
 

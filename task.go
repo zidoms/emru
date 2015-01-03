@@ -10,7 +10,6 @@ type (
 		Title     string `json:"title"`
 		Body      string `json:"body"`
 		done      status
-		reminder  time.Time
 		createdAt time.Time
 	}
 

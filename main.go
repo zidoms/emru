@@ -9,7 +9,7 @@ import (
 	"github.com/bmizerany/pat"
 )
 
-var list = newList()
+var list = loadList()
 
 func main() {
 	r := pat.New()
