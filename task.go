@@ -11,8 +11,6 @@ type (
 		Body      string `json:"body"`
 		done      status
 		reminder  time.Time
-		actions   []*action // Keeps task history
-		labels    []*label
 		createdAt time.Time
 	}
 
@@ -25,10 +23,8 @@ func NewTask(title, body string) *task {
 		Title:     title,
 		Body:      body,
 		done:      false,
-		actions:   make([]*action, 0),
 		createdAt: time.Now(),
 	}
-	t.actions = append(t.actions, newAction(*t))
 
 	return t
 }
@@ -37,6 +33,6 @@ func (t *task) String() string {
 	return fmt.Sprintf("Title: %s, Body: %s", t.Title, t.Body)
 }
 
-func (s *status) Toggle() {
+func (s *status) toggle() {
 	*s = !(*s)
 }

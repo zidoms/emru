@@ -9,7 +9,7 @@ import (
 
 func TestGetList(t *testing.T) {
 	list.AddTask(NewTask("Test", "Server test"))
-	defer list.Clear()
+	defer list.clear()
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "http://localhost:4040", nil)
 	if err != nil {
@@ -25,7 +25,7 @@ func TestGetList(t *testing.T) {
 }
 
 func TestCreateNewTask(t *testing.T) {
-	defer list.Clear()
+	defer list.clear()
 	w := httptest.NewRecorder()
 	buf := []byte(`{"title":"Test","body":"Server test"}`)
 	req, err := http.NewRequest("POST", "http://localhost:4040/task", bytes.NewBuffer(buf))
@@ -48,7 +48,7 @@ func TestCreateNewTask(t *testing.T) {
 
 func TestUpdateTask(t *testing.T) {
 	list.AddTask(NewTask("Test", "Server test"))
-	defer list.Clear()
+	defer list.clear()
 	w := httptest.NewRecorder()
 	buf := []byte(`{"title":"Test update","body":"Updated body"}`)
 	req, err := http.NewRequest("PUT", "http://localhost:4040/task/0?:id=0", bytes.NewBuffer(buf))
@@ -68,7 +68,7 @@ func TestUpdateTask(t *testing.T) {
 
 func TestDeleteTask(t *testing.T) {
 	list.AddTask(NewTask("Test", "Server test"))
-	defer list.Clear()
+	defer list.clear()
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("DELETE", "http://localhost:4040/task/0?:id=0", nil)
 	if err != nil {

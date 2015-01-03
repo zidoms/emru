@@ -1,21 +1,33 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"sync"
 	"time"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // Today's todo list
 type List struct {
 	tasks []*task
 	date  time.Time
+	db    *sql.DB
 	lock  sync.Mutex
 }
 
-func NewList() *List {
+func newList() *List {
 	return &List{tasks: make([]*task, 0), date: time.Now()}
 }
+
+// func loadList() *List {
+// 	db, err := sql.Open("sqlite3", "emru.db")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	list := newList()
+// }
 
 func (l *List) AddTask(t *task) {
 	l.lock.Lock()
@@ -23,7 +35,7 @@ func (l *List) AddTask(t *task) {
 	l.tasks = append(l.tasks, t)
 }
 
-func (l *List) RemoveTaskByIndex(i int) {
+func (l *List) removeTaskByIndex(i int) {
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	if e := len(l.tasks) - 1; i != e {
@@ -33,7 +45,7 @@ func (l *List) RemoveTaskByIndex(i int) {
 	}
 }
 
-func (l *List) GetTask(i int) *task {
+func (l *List) getTask(i int) *task {
 	return l.tasks[i]
 }
 
@@ -45,7 +57,7 @@ func (l *List) Tasks() []*task {
 	return r
 }
 
-func (l *List) Clear() {
+func (l *List) clear() {
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	l.tasks = nil

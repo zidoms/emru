@@ -16,9 +16,6 @@ func TestNewTask(t *testing.T) {
 	if task.done {
 		t.Errorf("Expected task status %v, but got %v", false, task.done)
 	}
-	if len(task.actions) != 1 {
-		t.Errorf("Expected task actions len %d, but got %d", 1, len(task.actions))
-	}
 }
 
 func TestString(t *testing.T) {
@@ -29,7 +26,7 @@ func TestString(t *testing.T) {
 }
 
 func TestMarshalJsonTask(t *testing.T) {
-	task := NewTask("Task Title", "Task Body")
+	task := NewTask("Task title", "Task body")
 	b, err := json.Marshal(task)
 	if err != nil {
 		t.Fatalf("Couldn't marshal list: %s", err)
@@ -56,7 +53,7 @@ func TestToggle(t *testing.T) {
 		{false, true},
 	}
 	for i, test := range tests {
-		test.s.Toggle()
+		test.s.toggle()
 		if test.s != test.expect {
 			t.Errorf("Test %d: Expected %s after toggle but got %s", i, test.expect, test.s)
 		}

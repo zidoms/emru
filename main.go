@@ -9,7 +9,7 @@ import (
 	"github.com/bmizerany/pat"
 )
 
-var list = NewList()
+var list = newList()
 
 func main() {
 	r := pat.New()
@@ -20,7 +20,7 @@ func main() {
 	http.Handle("/", r)
 	go http.ListenAndServe(":4040", nil)
 
-	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./app", "4040").Output()
+	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./frontend/app", "4040").Output()
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +51,7 @@ func updateTask(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	t := list.GetTask(i)
+	t := list.getTask(i)
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -63,6 +63,6 @@ func deleteTask(w http.ResponseWriter, req *http.Request) {
 	if i, err := strconv.Atoi(req.URL.Query().Get(":id")); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	} else {
-		list.RemoveTaskByIndex(i)
+		list.removeTaskByIndex(i)
 	}
 }
