@@ -15,14 +15,14 @@ type List struct {
 	db    *sql.DB
 }
 
-func newList() *List {
+func NewList() *List {
 	l := &List{tasks: make([]*Task, 0)}
-	l.initDB()
 	return l
 }
 
 func LoadList() *List {
-	list := newList()
+	list := NewList()
+	list.initDB()
 
 	var (
 		id          int
@@ -99,11 +99,14 @@ func (l *List) Tasks() []*Task {
 
 func (l *List) Clear() {
 	l.tasks = nil
-	if _, err := l.db.Exec("drop table if exists tasks"); err != nil {
-		log.Error("Couldn't remove table tasks: %s", err)
+
+	if l.db != nil {
+		if _, err := l.db.Exec("drop table if exists tasks"); err != nil {
+			log.Error("Couldn't remove table tasks: %s", err)
+		}
+		l.db.Close()
+		l.initDB()
 	}
-	l.db.Close()
-	l.initDB()
 }
 
 func (l *List) MarshalJSON() ([]byte, error) {
