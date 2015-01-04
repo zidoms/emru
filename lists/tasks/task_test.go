@@ -1,7 +1,6 @@
-package main
+package tasks
 
 import (
-	"encoding/json"
 	"testing"
 )
 
@@ -13,8 +12,8 @@ func TestNewTask(t *testing.T) {
 	if task.Body != "body" {
 		t.Errorf("Expected task body %s, but got %s", "body", task.Body)
 	}
-	if task.done {
-		t.Errorf("Expected task status %v, but got %v", false, task.done)
+	if task.Done {
+		t.Errorf("Expected task status %v, but got %v", false, task.Done)
 	}
 }
 
@@ -25,29 +24,10 @@ func TestString(t *testing.T) {
 	}
 }
 
-func TestMarshalJsonTask(t *testing.T) {
-	task := NewTask("Task title", "Task body")
-	b, err := json.Marshal(task)
-	if err != nil {
-		t.Fatalf("Couldn't marshal list: %s", err)
-	}
-	v := make(map[string]string)
-	err = json.Unmarshal(b, &v)
-	if err != nil {
-		t.Fatalf("Couldn't unmarshal: %s", err)
-	}
-	if v["title"] != task.Title {
-		t.Errorf("Expected title %s, but got %s", task.Title, v["title"])
-	}
-	if v["body"] != task.Body {
-		t.Errorf("Expected body %s, but got %s", task.Body, v["body"])
-	}
-}
-
 func TestToggle(t *testing.T) {
 	tests := []struct {
-		s      status
-		expect status
+		s      Status
+		expect Status
 	}{
 		{true, false},
 		{false, true},

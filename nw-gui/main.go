@@ -8,9 +8,11 @@ import (
 
 	"github.com/bmizerany/pat"
 	log "github.com/limetext/log4go"
+	"github.com/zidoms/emru/lists"
+	"github.com/zidoms/emru/lists/tasks"
 )
 
-var list = loadList()
+var list = lists.LoadList()
 
 func main() {
 	log.AddFilter("console", log.FINEST, log.NewConsoleLogWriter())
@@ -46,7 +48,7 @@ func getList(w http.ResponseWriter, req *http.Request) {
 func newTask(w http.ResponseWriter, req *http.Request) {
 	log.Finest("Recieved request for new task")
 	decoder := json.NewDecoder(req.Body)
-	t := NewTask("", "")
+	t := tasks.NewTask("", "")
 	if err := decoder.Decode(t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -60,7 +62,7 @@ func updateTask(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	t := list.getTask(i)
+	t := list.GetTask(i)
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -72,6 +74,6 @@ func deleteTask(w http.ResponseWriter, req *http.Request) {
 	if i, err := strconv.Atoi(req.URL.Query().Get(":id")); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	} else {
-		list.removeTaskByIndex(i)
+		list.RemoveTaskByIndex(i)
 	}
 }

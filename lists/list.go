@@ -1,4 +1,4 @@
-package main
+package lists
 
 import (
 	"database/sql"
@@ -7,20 +7,21 @@ import (
 
 	log "github.com/limetext/log4go"
 	_ "github.com/mattn/go-sqlite3"
+	. "github.com/zidoms/emru/lists/tasks"
 )
 
 type List struct {
-	tasks []*task
+	tasks []*Task
 	db    *sql.DB
 }
 
 func newList() *List {
-	l := &List{tasks: make([]*task, 0)}
+	l := &List{tasks: make([]*Task, 0)}
 	l.initDB()
 	return l
 }
 
-func loadList() *List {
+func LoadList() *List {
 	list := newList()
 
 	var (
@@ -40,9 +41,9 @@ func loadList() *List {
 			log.Warn(err)
 		}
 		t := NewTask(title, body)
-		t.id = id
-		t.done = status(done)
-		t.createdAt = date
+		t.Id = id
+		t.Done = Status(done)
+		t.CreatedAt = date
 		list.addTask(t)
 	}
 
@@ -54,35 +55,31 @@ func (l *List) initDB() {
 	if err != nil {
 		panic(err)
 	}
-	_, err = db.Exec(`
-		create table if not exists
-			tasks(id integer primary key autoincrement,
-			title, body varchar(255), done boolean default false,
-			created_at datetime default current_timestamp)
-	`)
-	if err != nil {
+	q := `create table if not exists
+		tasks(id integer primary key autoincrement,
+		title, body varchar(255), done boolean default false,
+		created_at datetime default current_timestamp)`
+	if _, err = db.Exec(q); err != nil {
 		panic(err)
 	}
 	l.db = db
 }
 
-func (l *List) addTask(t *task) {
+func (l *List) addTask(t *Task) {
 	log.Finest("Adding task %s", t)
 	l.tasks = append(l.tasks, t)
 }
 
-func (l *List) AddTask(t *task) {
-	_, err := l.db.Exec(`
-		insert into tasks(title, body, done, created_at) values(?, ?, ?, ?)
-		`, t.Title, t.Body, bool(t.done), t.createdAt)
-	if err != nil {
+func (l *List) AddTask(t *Task) {
+	q := "insert into tasks(title, body, done, created_at) values(?, ?, ?, ?)"
+	if _, err := l.db.Exec(q, t.Title, t.Body, bool(t.Done), t.CreatedAt); err != nil {
 		log.Error("Couldn't insert task: %s", err)
-	} else {
-		l.addTask(t)
+		return
 	}
+	l.addTask(t)
 }
 
-func (l *List) removeTaskByIndex(i int) {
+func (l *List) RemoveTaskByIndex(i int) {
 	if e := len(l.tasks) - 1; i != e {
 		copy(l.tasks[i:], l.tasks[i+1:])
 	} else {
@@ -90,23 +87,28 @@ func (l *List) removeTaskByIndex(i int) {
 	}
 }
 
-func (l *List) getTask(i int) *task {
+func (l *List) GetTask(i int) *Task {
 	return l.tasks[i]
 }
 
-func (l *List) Tasks() []*task {
-	r := make([]*task, len(l.tasks))
+func (l *List) Tasks() []*Task {
+	r := make([]*Task, len(l.tasks))
 	copy(r, l.tasks)
 	return r
 }
 
-func (l *List) clear() {
+func (l *List) Clear() {
 	l.tasks = nil
+	if _, err := l.db.Exec("drop table if exists tasks"); err != nil {
+		log.Error("Couldn't remove table tasks: %s", err)
+	}
+	l.db.Close()
+	l.initDB()
 }
 
 func (l *List) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Tasks []*task `json:"tasks"`
+		Tasks []*Task `json:"tasks"`
 	}{
 		l.tasks,
 	})

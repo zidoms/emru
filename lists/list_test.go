@@ -1,8 +1,11 @@
-package main
+package lists
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
+
+	. "github.com/zidoms/emru/lists/tasks"
 )
 
 func TestNewList(t *testing.T) {
@@ -79,7 +82,9 @@ func TestMarshalJsonList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Couldn't marshal list: %s", err)
 	}
-	if string(b) != `{"tasks":[{"title":"Task title","body":"Task Body"}]}` {
-		t.Errorf("Expected marshaled json %s, but got %s", `{"tasks":[{"title":"Task title","body":"Task Body"}]}`, string(b))
+	jt, _ := json.Marshal(t1)
+	exp := fmt.Sprintf(`{"tasks":[%s]}`, string(jt))
+	if string(b) != exp {
+		t.Errorf("Expected marshaled json %s, but got %s", exp, string(b))
 	}
 }
