@@ -74,6 +74,6 @@ func deleteTask(w http.ResponseWriter, req *http.Request) {
 	if i, err := strconv.Atoi(req.URL.Query().Get(":id")); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	} else {
-		list.RemoveTaskByIndex(i)
+		list.RemoveTask(i)
 	}
 }

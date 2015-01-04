@@ -42,11 +42,11 @@ func TestAddTask(t *testing.T) {
 	}
 }
 
-func TestRemoveTaskByIndex(t *testing.T) {
+func TestRemoveTask(t *testing.T) {
 	l := NewList()
 	t1 := NewTask("Task title", "Task Body")
 	l.addTask(t1)
-	l.RemoveTaskByIndex(0)
+	l.removeTask(0)
 	if len(l.Tasks()) != 0 {
 		t.Errorf("Expected tasks be empty but has %d members", len(l.Tasks()))
 	}
@@ -68,7 +68,7 @@ func TestClearList(t *testing.T) {
 	l := NewList()
 	t1 := NewTask("Task title", "Task Body")
 	l.addTask(t1)
-	l.Clear()
+	l.clear()
 	if len(l.Tasks()) != 0 {
 		t.Errorf("Expected tasks be empty but has %d members", len(l.Tasks()))
 	}

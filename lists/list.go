@@ -79,12 +79,19 @@ func (l *List) AddTask(t *Task) {
 	l.addTask(t)
 }
 
-func (l *List) RemoveTaskByIndex(i int) {
+func (l *List) removeTask(i int) {
 	if e := len(l.tasks) - 1; i != e {
 		copy(l.tasks[i:], l.tasks[i+1:])
 	} else {
 		l.tasks = l.tasks[:e]
 	}
+}
+
+func (l *List) RemoveTask(i int) {
+	if _, err := l.db.Exec("delete from tasks where id = ?", i); err != nil {
+		log.Error("Erro on deleting task %d: %s", i, err)
+	}
+	l.removeTask(i)
 }
 
 func (l *List) GetTask(i int) *Task {
@@ -97,16 +104,16 @@ func (l *List) Tasks() []*Task {
 	return r
 }
 
-func (l *List) Clear() {
+func (l *List) clear() {
 	l.tasks = nil
+}
 
-	if l.db != nil {
-		if _, err := l.db.Exec("drop table if exists tasks"); err != nil {
-			log.Error("Couldn't remove table tasks: %s", err)
-		}
-		l.db.Close()
-		l.initDB()
+func (l *List) Clear() {
+	if _, err := l.db.Exec("drop table if exists tasks"); err != nil {
+		log.Error("Couldn't remove table tasks: %s", err)
 	}
+	l.db.Close()
+	l.initDB()
 }
 
 func (l *List) MarshalJSON() ([]byte, error) {
