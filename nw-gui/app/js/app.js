@@ -39,9 +39,7 @@ App.Views.Tasks = Backbone.View.extend({
 	},
 
 	addOne: function(task) {
-		var taskView = new App.Views.Task({model: task});
-
-		this.$el.append(taskView.render().el);
+		this.$el.append(new App.Views.Task({model: task}).render().el);
 	}
 });
 
