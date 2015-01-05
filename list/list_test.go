@@ -1,11 +1,11 @@
-package lists
+package list
 
 import (
 	"encoding/json"
 	"fmt"
 	"testing"
 
-	. "github.com/zidoms/emru/lists/tasks"
+	. "github.com/zidoms/emru/list/task"
 )
 
 func TestNewList(t *testing.T) {

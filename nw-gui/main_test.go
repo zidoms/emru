@@ -8,13 +8,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/zidoms/emru/lists/tasks"
+	"github.com/zidoms/emru/list/task"
 )
 
 func TestGetList(t *testing.T) {
-	task := tasks.NewTask("Test", "Server test")
-	list.AddTask(task)
-	defer list.Clear()
+	tsk := task.NewTask("Test", "Server test")
+	lst.AddTask(tsk)
+	defer lst.Clear()
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "http://localhost:4040", nil)
 	if err != nil {
@@ -24,7 +24,7 @@ func TestGetList(t *testing.T) {
 	if w.Code != 200 {
 		t.Errorf("Expected response code 200, but got %d", w.Code)
 	}
-	jt, _ := json.Marshal(task)
+	jt, _ := json.Marshal(tsk)
 	exp := fmt.Sprintf(`{"tasks":[%s]}`, string(jt))
 	if w.Body.String() != exp {
 		t.Errorf("Expected response body %s, but got %s", exp, w.Body.String())
@@ -32,7 +32,7 @@ func TestGetList(t *testing.T) {
 }
 
 func TestCreateNewTask(t *testing.T) {
-	defer list.Clear()
+	defer lst.Clear()
 	w := httptest.NewRecorder()
 	buf := []byte(`{"title":"Test","body":"Server test"}`)
 	req, err := http.NewRequest("POST", "http://localhost:4040/tasks", bytes.NewBuffer(buf))
@@ -44,7 +44,7 @@ func TestCreateNewTask(t *testing.T) {
 	if w.Code != 200 {
 		t.Errorf("Expected response code 200, but got %d", w.Code)
 	}
-	ts := list.Tasks()
+	ts := lst.Tasks()
 	if len(ts) != 1 {
 		t.Fatalf("Expected 1 task in list, but got %d", len(ts))
 	}
@@ -54,8 +54,8 @@ func TestCreateNewTask(t *testing.T) {
 }
 
 func TestUpdateTask(t *testing.T) {
-	list.AddTask(tasks.NewTask("Test", "Server test"))
-	defer list.Clear()
+	lst.AddTask(task.NewTask("Test", "Server test"))
+	defer lst.Clear()
 	w := httptest.NewRecorder()
 	buf := []byte(`{"title":"Test update","body":"Updated body"}`)
 	req, err := http.NewRequest("PUT", "http://localhost:4040/tasks/0?:id=0", bytes.NewBuffer(buf))
@@ -67,15 +67,15 @@ func TestUpdateTask(t *testing.T) {
 	if w.Code != 200 {
 		t.Errorf("Expected response code 200, but got %d", w.Code)
 	}
-	ts := list.Tasks()
+	ts := lst.Tasks()
 	if ts[0].String() != "Title: Test update, Body: Updated body" {
 		t.Errorf("Expected task %s, but got %s", "Title: Test update, Body: Updated body", ts[0].String())
 	}
 }
 
 func TestDeleteTask(t *testing.T) {
-	list.AddTask(tasks.NewTask("Test", "Server test"))
-	defer list.Clear()
+	lst.AddTask(task.NewTask("Test", "Server test"))
+	defer lst.Clear()
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("DELETE", "http://localhost:4040/tasks/0?:id=0", nil)
 	if err != nil {
@@ -85,7 +85,7 @@ func TestDeleteTask(t *testing.T) {
 	if w.Code != 200 {
 		t.Errorf("Expected response code 200, but got %d", w.Code)
 	}
-	if ts := list.Tasks(); len(ts) != 0 {
+	if ts := lst.Tasks(); len(ts) != 0 {
 		t.Fatalf("Expected list be empty, but has %d tasks", len(ts))
 	}
 }

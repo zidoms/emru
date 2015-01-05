@@ -1,4 +1,4 @@
-package lists
+package list
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 
 	log "github.com/limetext/log4go"
 	_ "github.com/mattn/go-sqlite3"
-	. "github.com/zidoms/emru/lists/tasks"
+	. "github.com/zidoms/emru/list/task"
 )
 
 type List struct {
@@ -114,6 +114,7 @@ func (l *List) Clear() {
 	}
 	l.db.Close()
 	l.initDB()
+	l.clear()
 }
 
 func (l *List) MarshalJSON() ([]byte, error) {

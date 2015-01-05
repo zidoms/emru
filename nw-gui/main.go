@@ -8,11 +8,11 @@ import (
 
 	"github.com/bmizerany/pat"
 	log "github.com/limetext/log4go"
-	"github.com/zidoms/emru/lists"
-	"github.com/zidoms/emru/lists/tasks"
+	"github.com/zidoms/emru/list"
+	"github.com/zidoms/emru/list/task"
 )
 
-var list = lists.LoadList()
+var lst = list.LoadList()
 
 func main() {
 	log.AddFilter("console", log.FINEST, log.NewConsoleLogWriter())
@@ -37,7 +37,7 @@ func serve() {
 
 func getList(w http.ResponseWriter, req *http.Request) {
 	log.Finest("Recieved request for list")
-	if data, err := json.Marshal(list); err != nil {
+	if data, err := json.Marshal(lst); err != nil {
 		http.Error(w, "Couldn't marshal list", http.StatusInternalServerError)
 	} else {
 		w.Header().Set("Content-Type", "application/json")
@@ -48,12 +48,12 @@ func getList(w http.ResponseWriter, req *http.Request) {
 func newTask(w http.ResponseWriter, req *http.Request) {
 	log.Finest("Recieved request for new task")
 	decoder := json.NewDecoder(req.Body)
-	t := tasks.NewTask("", "")
+	t := task.NewTask("", "")
 	if err := decoder.Decode(t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	list.AddTask(t)
+	lst.AddTask(t)
 }
 
 func updateTask(w http.ResponseWriter, req *http.Request) {
@@ -62,7 +62,7 @@ func updateTask(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	t := list.GetTask(i)
+	t := lst.GetTask(i)
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -74,6 +74,6 @@ func deleteTask(w http.ResponseWriter, req *http.Request) {
 	if i, err := strconv.Atoi(req.URL.Query().Get(":id")); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	} else {
-		list.RemoveTask(i)
+		lst.RemoveTask(i)
 	}
 }
