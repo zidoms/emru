@@ -10,14 +10,22 @@
 	<header>
 		<div id="title">امروز</div>
 		<ul id="actions">
-			<li class="action"><a title="کار جدید" class="hover-link icon-add"></a></li>
+			<li class="action"><a title="کار جدید" class="hover-link icon-add add"></a></li>
 		</ul>
 	</header>
 	<main>
-		<div id="add">
+		<form id="add">
 			<input type="text" name="task" placeholder="کار جدید...">
-		</div>
-		<ul id="list"></ul>
+		</form>
+		<script id="taskTemplate"  type="text/template">
+			<div class="main">
+				<div class="title"><%= title %></div>
+				<ul class="actions">
+					<li class="action"><a class="hover-link icon-done status"></a></li>
+					<li class="action"><a class="hover-link icon-cancel remove"></a></li>
+				</ul>
+			</div>
+		</script>
 	</main>
 	<script src="app.js"></script>
 </body>

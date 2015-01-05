@@ -36,32 +36,41 @@ gulp.task('compass', function() {
 gulp.task('uglify', function() {
 	gulp.src(paths.js)
 		.pipe(uglify())
+		.on('error', handleError)
 		.pipe(gulp.dest(paths.dist));
 });
 
 gulp.task('concat', function() {
 	gulp.src(paths.libjs)
 		.pipe(concat('app.js'))
+		.on('error', handleError)
 		.pipe(gulp.dest(paths.dist));
-})
+});
 
 gulp.task('htmlmin', function() {
 	gulp.src(paths.htmls)
-	.pipe(
-		htmlmin({
-			removeComments: true,
-			removeCommentsFromCDATA: true,
-			removeCDATASectionsFromCDATA: true,
-			collapseWhitespace: true,
-			collapseBooleanAttributes: true,
-			removeAttributeQuotes: true,
-			removeRedundantAttributes: true,
-			removeEmptyAttributes: true,
-			removeScriptTypeAttributes: true,
-			removeOptionalTags: true
-		})
-	)
-	.pipe(gulp.dest(paths.dist));
+		.pipe(
+			htmlmin({
+				removeComments: true,
+				removeCommentsFromCDATA: true,
+				removeCDATASectionsFromCDATA: true,
+				collapseWhitespace: true,
+				collapseBooleanAttributes: true,
+				removeAttributeQuotes: true,
+				removeRedundantAttributes: true,
+				removeEmptyAttributes: true,
+				removeScriptTypeAttributes: true,
+				removeOptionalTags: true
+			})
+		)
+		.on('error', handleError)
+		.pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('default', ['compass', 'uglify', 'concat', 'htmlmin']);
+gulp.task('watch', function() {
+	gulp.watch(paths.styles, ['compass']);
+	gulp.watch(paths.js, ['uglify', 'concat']);
+	gulp.watch(paths.htmls, ['htmlmin']);
+});
+
+gulp.task('default', ['compass', 'uglify', 'concat', 'htmlmin', 'watch']);
