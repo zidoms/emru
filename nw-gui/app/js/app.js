@@ -39,7 +39,7 @@ App.Views.Tasks = Backbone.View.extend({
 	},
 
 	addOne: function(task) {
-		var taskView = new App.Views.Task({ model: task });
+		var taskView = new App.Views.Task({model: task});
 
 		this.$el.append(taskView.render().el);
 	}
@@ -61,8 +61,9 @@ App.Views.Task = Backbone.View.extend({
 		'click .remove': 'remove'
 	},
 
-	done: function() {
-		this.$el.addClass('done');
+	done: function(e) {
+		this.$el.toggleClass('done');
+		$(e.currentTarget).parent('.action').toggleClass('active');
 	},
 
 	remove: function() {
@@ -98,18 +99,27 @@ App.Views.AddTask = Backbone.View.extend({
 	}
 });
 
+App.Views.Nav = Backbone.View.extend({
+	el: '#actions',
+
+	events: {
+		'click .add': 'addTask'
+	},
+
+	addTask: function(e) {
+		console.log('hi');
+		$(e.currentTarget).parent('.action').toggleClass('active');
+		$('#add').slideToggle(200);
+		$('#add input').focus();
+	}
+});
+
 var tasksCollection = new App.Collections.Tasks();
 
-var addTaskView = new App.Views.AddTask({ collection: tasksCollection });
+var navView = new App.Views.Nav();
+var addTaskView = new App.Views.AddTask({collection: tasksCollection});
 
-var tasksView = new App.Views.Tasks({ collection: tasksCollection });
+var tasksView = new App.Views.Tasks({collection: tasksCollection});
 $('main').append(tasksView.render().el);
-
-// TODO: Move to new view such as nav
-$('.add').click(function(e) {
-	$(this).parent('.action').toggleClass('active');
-	$('#add').slideToggle(200);
-	$('#add input').focus();
-});
 
 })();
