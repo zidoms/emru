@@ -1,10 +1,17 @@
 var gulp = require('gulp'),
 	compass = require('gulp-compass'),
 	htmlmin = require('gulp-htmlmin'),
-	uglify = require('gulp-uglify');
+	uglify = require('gulp-uglify'),
+	concat = require('gulp-concat');
 
 var paths = {
-	scripts: 'scripts/*.js',
+	js: 'js/*.js',
+	libjs: [
+		'js/lib/underscore.js',
+		'js/lib/jquery.js',
+		'js/lib/backbone.js',
+		'dist/app.js'
+	],
 	styles: 'styles/*.sass',
 	htmls: '*.html',
 	dist: 'dist'
@@ -23,16 +30,20 @@ gulp.task('compass', function() {
 			css: paths.dist
 		}))
 		.on('error', handleError)
-		.pipe(gulp.dest(paths.dist))
-		.pipe(connect.reload());
+		.pipe(gulp.dest(paths.dist));
 });
 
 gulp.task('uglify', function() {
-  gulp.src(paths.scripts)
-    .pipe(uglify())
-    .pipe(gulp.dest(paths.dist))
-    .pipe(connect.reload());
+	gulp.src(paths.js)
+		.pipe(uglify())
+		.pipe(gulp.dest(paths.dist));
 });
+
+gulp.task('concat', function() {
+	gulp.src(paths.libjs)
+		.pipe(concat('app.js'))
+		.pipe(gulp.dest(paths.dist));
+})
 
 gulp.task('htmlmin', function() {
 	gulp.src(paths.htmls)
@@ -50,14 +61,7 @@ gulp.task('htmlmin', function() {
 			removeOptionalTags: true
 		})
 	)
-	.pipe(gulp.dest(paths.dist))
-	.pipe(connect.reload());
+	.pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('watch', function() {
-	gulp.watch(paths.styles, ['compass']);
-	gulp.watch(paths.scripts, ['uglify']);
-	gulp.watch(paths.htmls, ['htmlmin']);
-});
-
-gulp.task('default', ['compass', 'uglify', 'htmlmin', 'watch']);
+gulp.task('default', ['compass', 'uglify', 'concat', 'htmlmin']);

@@ -1,6 +1,6 @@
 {
   "name": "emru",
-  "main": "index.html",
+  "main": "dist/index.html",
   "version": "0.0.0",
   "description": "Today's To-do List",
   "keywords": [
@@ -26,14 +26,12 @@
   "devDependencies": {
     "gulp": "^3.8.8",
     "gulp-compass": "^2.0.3",
+    "gulp-concat": "^2.4.3",
     "gulp-htmlmin": "^0.2.0",
     "gulp-uglify": "^1.0.2"
   },
   "dependencies": {
-    "backbone": "^1.1.2",
     "jalali-date": "^0.1.5",
-    "jquery": "^2.1.1",
-    "persianjs": "^0.3.0",
-    "request": "^2.51.0"
+    "persianjs": "^0.3.0"
   }
 }
