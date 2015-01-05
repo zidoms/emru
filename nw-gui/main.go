@@ -19,7 +19,7 @@ func main() {
 
 	go serve()
 
-	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./frontend/app", "4040").Output()
+	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./app", "4040").Output()
 	if err != nil {
 		panic(err)
 	}
