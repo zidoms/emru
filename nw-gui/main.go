@@ -12,8 +12,6 @@ import (
 	"github.com/zidoms/emru/list/task"
 )
 
-var lst = list.LoadList()
-
 func main() {
 	log.AddFilter("console", log.FINEST, log.NewConsoleLogWriter())
 
@@ -37,7 +35,7 @@ func serve() {
 
 func getList(w http.ResponseWriter, req *http.Request) {
 	log.Finest("Recieved request for list")
-	if data, err := json.Marshal(lst); err != nil {
+	if data, err := json.Marshal(list.Emru()); err != nil {
 		http.Error(w, "Couldn't marshal list", http.StatusInternalServerError)
 	} else {
 		w.Header().Set("Content-Type", "application/json")
@@ -53,7 +51,7 @@ func newTask(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	lst.AddTask(t)
+	list.Emru().AddTask(t)
 }
 
 func updateTask(w http.ResponseWriter, req *http.Request) {
@@ -62,7 +60,7 @@ func updateTask(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	t := lst.GetTask(i)
+	t := list.Emru().GetTask(i)
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -74,6 +72,6 @@ func deleteTask(w http.ResponseWriter, req *http.Request) {
 	if i, err := strconv.Atoi(req.URL.Query().Get(":id")); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	} else {
-		lst.RemoveTask(i)
+		list.Emru().RemoveTask(i)
 	}
 }

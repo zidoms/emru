@@ -14,6 +14,8 @@ type (
 		CreatedAt time.Time `json:"created_at"`
 	}
 
+	Tasks []*Task
+
 	// Task status is it done or not
 	Status bool
 )
@@ -35,4 +37,16 @@ func (t *Task) String() string {
 
 func (s *Status) toggle() {
 	*s = !(*s)
+}
+
+func (t Tasks) Len() int {
+	return len(t)
+}
+
+func (t Tasks) Swap(i, j int) {
+	t[i], t[j] = t[j], t[i]
+}
+
+func (t Tasks) Less(i, j int) bool {
+	return t[i].Id < t[j].Id
 }

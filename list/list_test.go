@@ -8,8 +8,8 @@ import (
 	. "github.com/zidoms/emru/list/task"
 )
 
-func TestNewList(t *testing.T) {
-	l := NewList()
+func TestnewList(t *testing.T) {
+	l := newList()
 	if len(l.tasks) != 0 {
 		t.Errorf("Expected tasks be emty on new but is %d", len(l.tasks))
 	}
@@ -29,7 +29,7 @@ func TestAddTask(t *testing.T) {
 			"Second Test",
 		},
 	}
-	l := NewList()
+	l := newList()
 	for i, test := range tests {
 		task := NewTask(test.title, test.body)
 		l.addTask(task)
@@ -43,7 +43,7 @@ func TestAddTask(t *testing.T) {
 }
 
 func TestRemoveTask(t *testing.T) {
-	l := NewList()
+	l := newList()
 	t1 := NewTask("Task title", "Task Body")
 	l.addTask(t1)
 	l.removeTask(0)
@@ -53,7 +53,7 @@ func TestRemoveTask(t *testing.T) {
 }
 
 func TestTasks(t *testing.T) {
-	l := NewList()
+	l := newList()
 	if len(l.Tasks()) != 0 {
 		t.Errorf("Expected tasks be empty but has %d members", len(l.Tasks()))
 	}
@@ -65,7 +65,7 @@ func TestTasks(t *testing.T) {
 }
 
 func TestClearList(t *testing.T) {
-	l := NewList()
+	l := newList()
 	t1 := NewTask("Task title", "Task Body")
 	l.addTask(t1)
 	l.clear()
@@ -75,7 +75,7 @@ func TestClearList(t *testing.T) {
 }
 
 func TestMarshalJsonList(t *testing.T) {
-	l := NewList()
+	l := newList()
 	t1 := NewTask("Task title", "Task Body")
 	l.addTask(t1)
 	b, err := json.Marshal(l)

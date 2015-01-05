@@ -11,19 +11,27 @@ import (
 )
 
 type List struct {
-	tasks []*Task
+	tasks Tasks
 	db    *sql.DB
 }
 
-func NewList() *List {
-	l := &List{tasks: make([]*Task, 0)}
+var list *List
+
+func Emru() *List {
+	if list == nil {
+		list = newList()
+		list.initDB()
+		list.load()
+	}
+	return list
+}
+
+func newList() *List {
+	l := &List{tasks: make(Tasks, 0)}
 	return l
 }
 
-func LoadList() *List {
-	list := NewList()
-	list.initDB()
-
+func (l *List) load() {
 	var (
 		id          int
 		title, body string
@@ -46,8 +54,6 @@ func LoadList() *List {
 		t.CreatedAt = date
 		list.addTask(t)
 	}
-
-	return list
 }
 
 func (l *List) initDB() {
@@ -98,8 +104,8 @@ func (l *List) GetTask(i int) *Task {
 	return l.tasks[i]
 }
 
-func (l *List) Tasks() []*Task {
-	r := make([]*Task, len(l.tasks))
+func (l *List) Tasks() Tasks {
+	r := make(Tasks, len(l.tasks))
 	copy(r, l.tasks)
 	return r
 }
@@ -119,7 +125,7 @@ func (l *List) Clear() {
 
 func (l *List) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Tasks []*Task `json:"tasks"`
+		Tasks Tasks `json:"tasks"`
 	}{
 		l.tasks,
 	})
