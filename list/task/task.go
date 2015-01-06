@@ -39,14 +39,32 @@ func (s *Status) toggle() {
 	*s = !(*s)
 }
 
-func (t Tasks) Len() int {
-	return len(t)
+func (ts Tasks) Len() int {
+	return len(ts)
 }
 
-func (t Tasks) Swap(i, j int) {
-	t[i], t[j] = t[j], t[i]
+func (ts Tasks) Swap(i, j int) {
+	ts[i], ts[j] = ts[j], ts[i]
 }
 
-func (t Tasks) Less(i, j int) bool {
-	return t[i].Id < t[j].Id
+func (ts Tasks) Less(i, j int) bool {
+	return ts[i].Id < ts[j].Id
+}
+
+func (ts Tasks) Exists(id int) bool {
+	for _, t := range ts {
+		if t.Id == id {
+			return true
+		}
+	}
+	return false
+}
+
+func (ts Tasks) Index(id int) int {
+	for i, t := range ts {
+		if t.Id == id {
+			return i
+		}
+	}
+	return -1
 }

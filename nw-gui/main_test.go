@@ -23,7 +23,7 @@ func TestGetList(t *testing.T) {
 	}
 	getList(w, req)
 	if w.Code != 200 {
-		t.Errorf("Expected response code 200, but got %d", w.Code)
+		t.Errorf("Expected response code 200, but got %d: %v", w.Code, w.Body)
 	}
 	jt, _ := json.Marshal(tsk)
 	exp := fmt.Sprintf(`{"tasks":[%s]}`, string(jt))
@@ -43,7 +43,7 @@ func TestCreateNewTask(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	newTask(w, req)
 	if w.Code != 200 {
-		t.Errorf("Expected response code 200, but got %d", w.Code)
+		t.Errorf("Expected response code 200, but got %d: %v", w.Code, w.Body)
 	}
 	ts := list.Emru().Tasks()
 	if len(ts) != 1 {
@@ -66,7 +66,7 @@ func TestUpdateTask(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	updateTask(w, req)
 	if w.Code != 200 {
-		t.Errorf("Expected response code 200, but got %d", w.Code)
+		t.Errorf("Expected response code 200, but got %d: %v", w.Code, w.Body)
 	}
 	ts := list.Emru().Tasks()
 	if ts[0].String() != "Title: Test update, Body: Updated body" {
@@ -84,7 +84,7 @@ func TestDeleteTask(t *testing.T) {
 	}
 	deleteTask(w, req)
 	if w.Code != 200 {
-		t.Errorf("Expected response code 200, but got %d", w.Code)
+		t.Errorf("Expected response code 200, but got %d: %v", w.Code, w.Body)
 	}
 	if ts := list.Emru().Tasks(); len(ts) != 0 {
 		t.Fatalf("Expected list be empty, but has %d tasks", len(ts))

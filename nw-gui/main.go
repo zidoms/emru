@@ -51,27 +51,34 @@ func newTask(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	list.Emru().AddTask(t)
+	if err := list.Emru().AddTask(t); err != nil {
+		log.Error("Error on adding task %v: %s", t, err)
+	}
 }
 
 func updateTask(w http.ResponseWriter, req *http.Request) {
-	i, err := strconv.Atoi(req.URL.Query().Get(":id"))
+	id, err := strconv.Atoi(req.URL.Query().Get(":id"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	t := list.Emru().GetTask(i)
+	t := task.Task{}
 	decoder := json.NewDecoder(req.Body)
-	if err := decoder.Decode(t); err != nil {
+	if err := decoder.Decode(&t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+	if err := list.Emru().UpdateTask(id, t); err != nil {
+		log.Error("Error on updating task %d: %s", id, err)
 	}
 }
 
 func deleteTask(w http.ResponseWriter, req *http.Request) {
-	if i, err := strconv.Atoi(req.URL.Query().Get(":id")); err != nil {
+	if id, err := strconv.Atoi(req.URL.Query().Get(":id")); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	} else {
-		list.Emru().RemoveTask(i)
+		if err = list.Emru().RemoveTask(id); err != nil {
+			log.Error("Error on removing task %d: %s", id, err)
+		}
 	}
 }

@@ -3,6 +3,8 @@ package list
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
+	"sort"
 	"time"
 
 	log "github.com/limetext/log4go"
@@ -15,7 +17,12 @@ type List struct {
 	db    *sql.DB
 }
 
-var list *List
+var (
+	list *List
+
+	TaskNotFound = errors.New("Task not found")
+	TaskExists   = errors.New("Task with this id exists currently")
+)
 
 func Emru() *List {
 	if list == nil {
@@ -29,31 +36,6 @@ func Emru() *List {
 func newList() *List {
 	l := &List{tasks: make(Tasks, 0)}
 	return l
-}
-
-func (l *List) load() {
-	var (
-		id          int
-		title, body string
-		done        bool
-		date        time.Time
-	)
-
-	tasks, err := list.db.Query("select * from tasks order by id desc")
-	defer tasks.Close()
-	if err != nil {
-		panic(err)
-	}
-	for tasks.Next() {
-		if err = tasks.Scan(&id, &title, &body, &done, &date); err != nil {
-			log.Warn(err)
-		}
-		t := NewTask(title, body)
-		t.Id = id
-		t.Done = Status(done)
-		t.CreatedAt = date
-		list.addTask(t)
-	}
 }
 
 func (l *List) initDB() {
@@ -71,18 +53,51 @@ func (l *List) initDB() {
 	l.db = db
 }
 
+func (l *List) load() {
+	var (
+		id          int
+		title, body string
+		done        bool
+		date        time.Time
+	)
+
+	tasks, err := list.db.Query("select * from tasks order by id desc")
+	defer tasks.Close()
+	if err != nil {
+		panic(err)
+	}
+	for tasks.Next() {
+		if err = tasks.Scan(&id, &title, &body, &done, &date); err != nil {
+			log.Error(err)
+		}
+		t := NewTask(title, body)
+		t.Id = id
+		t.Done = Status(done)
+		t.CreatedAt = date
+		list.addTask(t)
+	}
+	list.flush()
+}
+
+func (l *List) flush() {
+	sort.Sort(l.tasks)
+}
+
 func (l *List) addTask(t *Task) {
-	log.Finest("Adding task %s", t)
+	log.Finest("Adding task %v", t)
 	l.tasks = append(l.tasks, t)
 }
 
-func (l *List) AddTask(t *Task) {
+func (l *List) AddTask(t *Task) error {
+	if l.tasks.Exists(t.Id) {
+		return TaskExists
+	}
+	l.addTask(t)
 	q := "insert into tasks(title, body, done, created_at) values(?, ?, ?, ?)"
 	if _, err := l.db.Exec(q, t.Title, t.Body, bool(t.Done), t.CreatedAt); err != nil {
 		log.Error("Couldn't insert task: %s", err)
-		return
 	}
-	l.addTask(t)
+	return nil
 }
 
 func (l *List) removeTask(i int) {
@@ -93,15 +108,43 @@ func (l *List) removeTask(i int) {
 	}
 }
 
-func (l *List) RemoveTask(i int) {
+func (l *List) RemoveTask(id int) error {
+	i := l.tasks.Index(id)
+	if i == -1 {
+		return TaskNotFound
+	}
+	l.removeTask(i)
 	if _, err := l.db.Exec("delete from tasks where id = ?", i); err != nil {
 		log.Error("Erro on deleting task %d: %s", i, err)
 	}
-	l.removeTask(i)
+	return nil
 }
 
-func (l *List) GetTask(i int) *Task {
-	return l.tasks[i]
+func (l *List) updateTask(i int, t Task) {
+	nt := l.tasks[i]
+	nt.Title = t.Title
+	nt.Body = t.Body
+}
+
+func (l *List) UpdateTask(id int, t Task) error {
+	i := l.tasks.Index(id)
+	if i == -1 {
+		return TaskNotFound
+	}
+	l.updateTask(i, t)
+	q := "update tasks set title = ?, body = ?, done = ? where id = ?"
+	if _, err := l.db.Exec(q, t.Title, t.Body, id); err != nil {
+		log.Error("Erro on updating task %d: %s", id, err)
+	}
+	return nil
+}
+
+func (l *List) GetTask(id int) (Task, error) {
+	i := l.tasks.Index(id)
+	if i == -1 {
+		return Task{}, TaskNotFound
+	}
+	return *l.tasks[i], nil
 }
 
 func (l *List) Tasks() Tasks {
@@ -115,12 +158,12 @@ func (l *List) clear() {
 }
 
 func (l *List) Clear() {
+	l.clear()
 	if _, err := l.db.Exec("drop table if exists tasks"); err != nil {
 		log.Error("Couldn't remove table tasks: %s", err)
 	}
 	l.db.Close()
 	l.initDB()
-	l.clear()
 }
 
 func (l *List) MarshalJSON() ([]byte, error) {
