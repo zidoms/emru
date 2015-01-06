@@ -13,14 +13,13 @@ window.template = function(id) {
 App.Models.Task = Backbone.Model.extend({
 	defaults: {
 		title: '',
-		body: '',
-		done: false,
-		date: ''
+		done: false
 	}
 });
 
 App.Collections.Tasks = Backbone.Collection.extend({
-	model: App.Models.Task
+	model: App.Models.Task,
+	url: 'http://localhost:4040/tasks',
 });
 
 App.Views.Tasks = Backbone.View.extend({
@@ -30,6 +29,8 @@ App.Views.Tasks = Backbone.View.extend({
 
 	initialize: function() {
 		this.collection.on('add', this.addOne, this);
+
+		$('main').append(this.render().el);
 	},
 
 	render: function() {
@@ -70,7 +71,6 @@ App.Views.Task = Backbone.View.extend({
 
 	render: function() {
 		var template = this.template(this.model.toJSON());
-
 		this.$el.html(template);
 
 		return this;
@@ -80,6 +80,10 @@ App.Views.Task = Backbone.View.extend({
 App.Views.AddTask = Backbone.View.extend({
 	el: '#add',
 
+	initialize: function(attrs) {
+		this.nav = attrs.nav;
+	},
+
 	events: {
 		'submit': 'submit'
 	},
@@ -87,13 +91,12 @@ App.Views.AddTask = Backbone.View.extend({
 	submit: function(e) {
 		e.preventDefault();
 
-		var title = $(e.currentTarget).find('input').val();
+		this.collection.create({
+			title: $(e.currentTarget).find('input').val(),
+			done: false
+		}, {wait: true});
 
-		this.collection.add(new App.Models.Task({title: title}));
-
-		$('#add').slideToggle(200);
-		$('.add').parent('.action').toggleClass('active');
-		$(e.currentTarget).find('input').val('');
+		this.nav.clearAdd();
 	}
 });
 
@@ -105,19 +108,22 @@ App.Views.Nav = Backbone.View.extend({
 	},
 
 	addTask: function(e) {
-		console.log('hi');
 		$(e.currentTarget).parent('.action').toggleClass('active');
 		$('#add').slideToggle(200);
 		$('#add input').focus();
+	},
+
+	clearAdd: function() {
+		$('#add').slideToggle(200);
+		$('.add').parent('.action').toggleClass('active');
+		$('#add input').val('');
 	}
 });
 
 var tasksCollection = new App.Collections.Tasks();
+var appNav = new App.Views.Nav();
 
-var navView = new App.Views.Nav();
-var addTaskView = new App.Views.AddTask({collection: tasksCollection});
-
-var tasksView = new App.Views.Tasks({collection: tasksCollection});
-$('main').append(tasksView.render().el);
+new App.Views.AddTask({collection: tasksCollection, nav: appNav});
+new App.Views.Tasks({collection: tasksCollection});
 
 })();

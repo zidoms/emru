@@ -35,6 +35,7 @@ func serve() {
 
 func getList(w http.ResponseWriter, req *http.Request) {
 	log.Finest("Recieved request for list")
+
 	if data, err := json.Marshal(list.Emru()); err != nil {
 		http.Error(w, "Couldn't marshal list", http.StatusInternalServerError)
 	} else {
@@ -45,14 +46,19 @@ func getList(w http.ResponseWriter, req *http.Request) {
 
 func newTask(w http.ResponseWriter, req *http.Request) {
 	log.Finest("Recieved request for new task")
+
 	decoder := json.NewDecoder(req.Body)
 	t := task.NewTask("", "")
 	if err := decoder.Decode(t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if err := list.Emru().Add(t); err != nil {
-		log.Error("Error on adding task %v: %s", t, err)
+
+	if data, err := json.Marshal(list.Emru().Add(t)); err != nil {
+		http.Error(w, "Couldn't marshal returned task", http.StatusInternalServerError)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(data)
 	}
 }
 
@@ -62,12 +68,14 @@ func updateTask(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	t := task.Task{}
 	decoder := json.NewDecoder(req.Body)
 	if err := decoder.Decode(&t); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	if err := list.Emru().Update(id, t); err != nil {
 		log.Error("Error on updating task %d: %s", id, err)
 	}

@@ -21,7 +21,6 @@ var (
 	list *List
 
 	TaskNotFound = errors.New("Task not found")
-	TaskExists   = errors.New("Task with this id exists currently")
 )
 
 func Emru() *List {
@@ -84,20 +83,20 @@ func (l *List) flush() {
 }
 
 func (l *List) add(t *Task) {
+	for l.tasks.Exists(t.Id) {
+		t.Id++
+	}
 	log.Finest("Adding task %v", t)
 	l.tasks = append(l.tasks, t)
 }
 
-func (l *List) Add(t *Task) error {
-	if l.tasks.Exists(t.Id) {
-		return TaskExists
-	}
+func (l *List) Add(t *Task) Task {
 	l.add(t)
 	q := "insert into tasks(title, body, done, created_at) values(?, ?, ?, ?)"
 	if _, err := l.db.Exec(q, t.Title, t.Body, bool(t.Done), t.CreatedAt); err != nil {
 		log.Error("Couldn't insert task: %s", err)
 	}
-	return nil
+	return *t
 }
 
 func (l *List) remove(i int) {
