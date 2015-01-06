@@ -51,7 +51,7 @@ func newTask(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if err := list.Emru().AddTask(t); err != nil {
+	if err := list.Emru().Add(t); err != nil {
 		log.Error("Error on adding task %v: %s", t, err)
 	}
 }
@@ -68,7 +68,7 @@ func updateTask(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if err := list.Emru().UpdateTask(id, t); err != nil {
+	if err := list.Emru().Update(id, t); err != nil {
 		log.Error("Error on updating task %d: %s", id, err)
 	}
 }
@@ -77,7 +77,7 @@ func deleteTask(w http.ResponseWriter, req *http.Request) {
 	if id, err := strconv.Atoi(req.URL.Query().Get(":id")); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	} else {
-		if err = list.Emru().RemoveTask(id); err != nil {
+		if err = list.Emru().Remove(id); err != nil {
 			log.Error("Error on removing task %d: %s", id, err)
 		}
 	}

@@ -15,7 +15,7 @@ func TestnewList(t *testing.T) {
 	}
 }
 
-func TestAddTask(t *testing.T) {
+func TestAdd(t *testing.T) {
 	tests := []struct {
 		title string
 		body  string
@@ -32,7 +32,7 @@ func TestAddTask(t *testing.T) {
 	l := newList()
 	for i, test := range tests {
 		task := NewTask(test.title, test.body)
-		l.addTask(task)
+		l.add(task)
 		if l.tasks[i].Title != test.title {
 			t.Errorf("Test %d: Expected task title %s, but got %s", test.title, l.tasks[i].Title)
 		}
@@ -42,11 +42,11 @@ func TestAddTask(t *testing.T) {
 	}
 }
 
-func TestRemoveTask(t *testing.T) {
+func TestRemove(t *testing.T) {
 	l := newList()
 	t1 := NewTask("Task title", "Task Body")
-	l.addTask(t1)
-	l.removeTask(0)
+	l.add(t1)
+	l.remove(0)
 	if len(l.Tasks()) != 0 {
 		t.Errorf("Expected tasks be empty but has %d members", len(l.Tasks()))
 	}
@@ -58,7 +58,7 @@ func TestTasks(t *testing.T) {
 		t.Errorf("Expected tasks be empty but has %d members", len(l.Tasks()))
 	}
 	task := NewTask("", "")
-	l.addTask(task)
+	l.add(task)
 	if len(l.Tasks()) != 1 {
 		t.Errorf("Expected tasks len 0, but got %d", len(l.Tasks()))
 	}
@@ -67,7 +67,7 @@ func TestTasks(t *testing.T) {
 func TestClearList(t *testing.T) {
 	l := newList()
 	t1 := NewTask("Task title", "Task Body")
-	l.addTask(t1)
+	l.add(t1)
 	l.clear()
 	if len(l.Tasks()) != 0 {
 		t.Errorf("Expected tasks be empty but has %d members", len(l.Tasks()))
@@ -77,7 +77,7 @@ func TestClearList(t *testing.T) {
 func TestMarshalJsonList(t *testing.T) {
 	l := newList()
 	t1 := NewTask("Task title", "Task Body")
-	l.addTask(t1)
+	l.add(t1)
 	b, err := json.Marshal(l)
 	if err != nil {
 		t.Fatalf("Couldn't marshal list: %s", err)

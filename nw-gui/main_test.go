@@ -14,7 +14,7 @@ import (
 
 func TestGetList(t *testing.T) {
 	tsk := task.NewTask("Test", "Server test")
-	list.Emru().AddTask(tsk)
+	list.Emru().Add(tsk)
 	defer list.Emru().Clear()
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "http://localhost:4040", nil)
@@ -54,8 +54,8 @@ func TestCreateNewTask(t *testing.T) {
 	}
 }
 
-func TestUpdateTask(t *testing.T) {
-	list.Emru().AddTask(task.NewTask("Test", "Server test"))
+func TestUpdate(t *testing.T) {
+	list.Emru().Add(task.NewTask("Test", "Server test"))
 	defer list.Emru().Clear()
 	w := httptest.NewRecorder()
 	buf := []byte(`{"title":"Test update","body":"Updated body"}`)
@@ -75,7 +75,7 @@ func TestUpdateTask(t *testing.T) {
 }
 
 func TestDeleteTask(t *testing.T) {
-	list.Emru().AddTask(task.NewTask("Test", "Server test"))
+	list.Emru().Add(task.NewTask("Test", "Server test"))
 	defer list.Emru().Clear()
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("DELETE", "http://localhost:4040/tasks/0?:id=0", nil)

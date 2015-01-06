@@ -74,7 +74,7 @@ func (l *List) load() {
 		t.Id = id
 		t.Done = Status(done)
 		t.CreatedAt = date
-		list.addTask(t)
+		list.add(t)
 	}
 	list.flush()
 }
@@ -83,16 +83,16 @@ func (l *List) flush() {
 	sort.Sort(l.tasks)
 }
 
-func (l *List) addTask(t *Task) {
+func (l *List) add(t *Task) {
 	log.Finest("Adding task %v", t)
 	l.tasks = append(l.tasks, t)
 }
 
-func (l *List) AddTask(t *Task) error {
+func (l *List) Add(t *Task) error {
 	if l.tasks.Exists(t.Id) {
 		return TaskExists
 	}
-	l.addTask(t)
+	l.add(t)
 	q := "insert into tasks(title, body, done, created_at) values(?, ?, ?, ?)"
 	if _, err := l.db.Exec(q, t.Title, t.Body, bool(t.Done), t.CreatedAt); err != nil {
 		log.Error("Couldn't insert task: %s", err)
@@ -100,7 +100,7 @@ func (l *List) AddTask(t *Task) error {
 	return nil
 }
 
-func (l *List) removeTask(i int) {
+func (l *List) remove(i int) {
 	if e := len(l.tasks) - 1; i != e {
 		copy(l.tasks[i:], l.tasks[i+1:])
 	} else {
@@ -108,30 +108,30 @@ func (l *List) removeTask(i int) {
 	}
 }
 
-func (l *List) RemoveTask(id int) error {
+func (l *List) Remove(id int) error {
 	i := l.tasks.Index(id)
 	if i == -1 {
 		return TaskNotFound
 	}
-	l.removeTask(i)
+	l.remove(i)
 	if _, err := l.db.Exec("delete from tasks where id = ?", i); err != nil {
 		log.Error("Erro on deleting task %d: %s", i, err)
 	}
 	return nil
 }
 
-func (l *List) updateTask(i int, t Task) {
+func (l *List) update(i int, t Task) {
 	nt := l.tasks[i]
 	nt.Title = t.Title
 	nt.Body = t.Body
 }
 
-func (l *List) UpdateTask(id int, t Task) error {
+func (l *List) Update(id int, t Task) error {
 	i := l.tasks.Index(id)
 	if i == -1 {
 		return TaskNotFound
 	}
-	l.updateTask(i, t)
+	l.update(i, t)
 	q := "update tasks set title = ?, body = ?, done = ? where id = ?"
 	if _, err := l.db.Exec(q, t.Title, t.Body, id); err != nil {
 		log.Error("Erro on updating task %d: %s", id, err)
@@ -139,7 +139,7 @@ func (l *List) UpdateTask(id int, t Task) error {
 	return nil
 }
 
-func (l *List) GetTask(id int) (Task, error) {
+func (l *List) Get(id int) (Task, error) {
 	i := l.tasks.Index(id)
 	if i == -1 {
 		return Task{}, TaskNotFound
