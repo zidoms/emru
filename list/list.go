@@ -38,6 +38,8 @@ func newList() *List {
 }
 
 func (l *List) initDB() {
+	log.Finest("Initializing db")
+
 	db, err := sql.Open("sqlite3", "emru.db")
 	if err != nil {
 		panic(err)
@@ -93,7 +95,7 @@ func (l *List) add(t *Task) {
 func (l *List) Add(t *Task) Task {
 	l.add(t)
 	q := "insert into tasks(title, body, done, created_at) values(?, ?, ?, ?)"
-	if _, err := l.db.Exec(q, t.Title, t.Body, bool(t.Done), t.CreatedAt); err != nil {
+	if _, err := l.db.Exec(q, t.Title, t.Body, t.Done.Val(), t.CreatedAt); err != nil {
 		log.Error("Couldn't insert task: %s", err)
 	}
 	return *t
@@ -120,9 +122,12 @@ func (l *List) Remove(id int) error {
 }
 
 func (l *List) update(i int, t Task) {
+	log.Debug("Updating task %v to %v", l.tasks[i], t)
+
 	nt := l.tasks[i]
 	nt.Title = t.Title
 	nt.Body = t.Body
+	nt.Done = t.Done
 }
 
 func (l *List) Update(id int, t Task) error {
@@ -132,7 +137,7 @@ func (l *List) Update(id int, t Task) error {
 	}
 	l.update(i, t)
 	q := "update tasks set title = ?, body = ?, done = ? where id = ?"
-	if _, err := l.db.Exec(q, t.Title, t.Body, id); err != nil {
+	if _, err := l.db.Exec(q, t.Title, t.Body, t.Done.Val(), id); err != nil {
 		log.Error("Erro on updating task %d: %s", id, err)
 	}
 	return nil
@@ -153,11 +158,14 @@ func (l *List) Tasks() Tasks {
 }
 
 func (l *List) clear() {
+	log.Finest("Clearing all tasks")
 	l.tasks = nil
 }
 
 func (l *List) Clear() {
 	l.clear()
+
+	log.Finest("Removing tasks table from db")
 	if _, err := l.db.Exec("drop table if exists tasks"); err != nil {
 		log.Error("Couldn't remove table tasks: %s", err)
 	}

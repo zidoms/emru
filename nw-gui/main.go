@@ -16,7 +16,6 @@ func main() {
 	log.AddFilter("console", log.FINEST, log.NewConsoleLogWriter())
 
 	go serve()
-
 	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./app", "4040").Output()
 	if err != nil {
 		panic(err)

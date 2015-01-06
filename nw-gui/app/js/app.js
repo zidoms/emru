@@ -63,6 +63,8 @@ App.Views.Task = Backbone.View.extend({
 	done: function(e) {
 		this.$el.toggleClass('done');
 		$(e.currentTarget).parent('.action').toggleClass('active');
+
+		this.model.set('done', !this.model.get('done')).save();
 	},
 
 	remove: function() {
@@ -124,6 +126,7 @@ var tasksCollection = new App.Collections.Tasks();
 var appNav = new App.Views.Nav();
 
 new App.Views.AddTask({collection: tasksCollection, nav: appNav});
-new App.Views.Tasks({collection: tasksCollection});
+
+window.App.List = new App.Views.Tasks({collection: tasksCollection});
 
 })();

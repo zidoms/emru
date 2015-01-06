@@ -39,6 +39,10 @@ func (s *Status) toggle() {
 	*s = !(*s)
 }
 
+func (s *Status) Val() bool {
+	return *s == true
+}
+
 func (ts Tasks) Len() int {
 	return len(ts)
 }
