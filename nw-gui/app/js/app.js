@@ -14,6 +14,11 @@ App.Models.Task = Backbone.Model.extend({
 	defaults: {
 		title: '',
 		done: false
+	},
+
+	validate: function(attrs) {
+		if (!attrs.title)
+			return 'Task title is required';
 	}
 });
 
@@ -52,23 +57,23 @@ App.Views.Task = Backbone.View.extend({
 	template: template('task'),
 
 	initialize: function() {
-		this.model.on('remove', this.remove, this);
+		this.model.on('destroy', this.unrender, this);
 	},
 
 	events: {
-		'click .status': 'done',
-		'click .remove': 'remove'
+		'click .status': 'toggleStatus',
+		'click .remove': 'deleteTask'
 	},
 
-	done: function(e) {
+	toggleStatus: function(e) {
 		this.$el.toggleClass('done');
 		$(e.currentTarget).parent('.action').toggleClass('active');
 
 		this.model.set('done', !this.model.get('done')).save();
 	},
 
-	remove: function() {
-		this.$el.remove();
+	deleteTask: function() {
+		this.model.destroy();
 	},
 
 	render: function() {
@@ -76,6 +81,10 @@ App.Views.Task = Backbone.View.extend({
 		this.$el.html(template);
 
 		return this;
+	},
+
+	unrender: function() {
+		this.remove();
 	}
 });
 
