@@ -14,17 +14,24 @@ import (
 
 func main() {
 	log.AddFilter("console", log.FINEST, log.NewConsoleLogWriter())
+	defer func() {
+		list.Quit()
+		if err := recover(); err != nil {
+			log.Critical(err)
+		}
+		log.Close()
+	}()
 
 	go serve()
 	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./app", "4040").Output()
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 }
 
 func serve() {
 	r := pat.New()
-	r.Get("/", http.HandlerFunc(getList))
+	r.Get("/tasks", http.HandlerFunc(tasks))
 	r.Post("/tasks", http.HandlerFunc(newTask))
 	r.Put("/tasks/:id", http.HandlerFunc(updateTask))
 	r.Del("/tasks/:id", http.HandlerFunc(deleteTask))
@@ -32,10 +39,10 @@ func serve() {
 	http.ListenAndServe(":4040", nil)
 }
 
-func getList(w http.ResponseWriter, req *http.Request) {
+func tasks(w http.ResponseWriter, req *http.Request) {
 	log.Finest("Recieved request for list")
 
-	if data, err := json.Marshal(list.Emru()); err != nil {
+	if data, err := json.Marshal(list.Emru().Tasks()); err != nil {
 		http.Error(w, "Couldn't marshal list", http.StatusInternalServerError)
 	} else {
 		w.Header().Set("Content-Type", "application/json")

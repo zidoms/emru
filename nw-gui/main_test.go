@@ -12,7 +12,7 @@ import (
 	"github.com/zidoms/emru/list/task"
 )
 
-func TestGetList(t *testing.T) {
+func TestTasks(t *testing.T) {
 	tsk := task.NewTask("Test", "Server test")
 	list.Emru().Add(tsk)
 	defer list.Emru().Clear()
@@ -21,12 +21,12 @@ func TestGetList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Creating NewRequest error: %s", err)
 	}
-	getList(w, req)
+	tasks(w, req)
 	if w.Code != 200 {
 		t.Errorf("Expected response code 200, but got %d: %v", w.Code, w.Body)
 	}
 	jt, _ := json.Marshal(tsk)
-	exp := fmt.Sprintf(`{"tasks":[%s]}`, string(jt))
+	exp := fmt.Sprintf(`[%s]`, string(jt))
 	if w.Body.String() != exp {
 		t.Errorf("Expected response body %s, but got %s", exp, w.Body.String())
 	}

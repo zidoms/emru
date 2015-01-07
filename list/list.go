@@ -32,6 +32,13 @@ func Emru() *List {
 	return list
 }
 
+func Quit() {
+	if list == nil {
+		return
+	}
+	list.db.Close()
+}
+
 func newList() *List {
 	l := &List{tasks: make(Tasks, 0)}
 	return l
@@ -88,7 +95,7 @@ func (l *List) add(t *Task) {
 	for l.tasks.Exists(t.Id) {
 		t.Id++
 	}
-	log.Finest("Adding task %v", t)
+	log.Finest("Adding task %v", *t)
 	l.tasks = append(l.tasks, t)
 }
 
@@ -102,6 +109,7 @@ func (l *List) Add(t *Task) Task {
 }
 
 func (l *List) remove(i int) {
+	log.Debug("Removing task %d: %v", i, *l.tasks[i])
 	if e := len(l.tasks) - 1; i != e {
 		copy(l.tasks[i:], l.tasks[i+1:])
 	} else {
@@ -115,14 +123,14 @@ func (l *List) Remove(id int) error {
 		return TaskNotFound
 	}
 	l.remove(i)
-	if _, err := l.db.Exec("delete from tasks where id = ?", i); err != nil {
+	if _, err := l.db.Exec("delete from tasks where id = ?", id); err != nil {
 		log.Error("Erro on deleting task %d: %s", i, err)
 	}
 	return nil
 }
 
 func (l *List) update(i int, t Task) {
-	log.Debug("Updating task %v to %v", l.tasks[i], t)
+	log.Debug("Updating task %v to %v", *l.tasks[i], t)
 
 	nt := l.tasks[i]
 	nt.Title = t.Title
@@ -151,9 +159,11 @@ func (l *List) Get(id int) (Task, error) {
 	return *l.tasks[i], nil
 }
 
-func (l *List) Tasks() Tasks {
-	r := make(Tasks, len(l.tasks))
-	copy(r, l.tasks)
+func (l *List) Tasks() []Task {
+	r := make([]Task, 0, len(l.tasks))
+	for _, t := range l.tasks {
+		r = append(r, *t)
+	}
 	return r
 }
 

@@ -54,13 +54,13 @@ func TestRemove(t *testing.T) {
 
 func TestTasks(t *testing.T) {
 	l := newList()
-	if len(l.Tasks()) != 0 {
-		t.Errorf("Expected tasks be empty but has %d members", len(l.Tasks()))
+	if ts := l.Tasks(); len(ts) != 0 {
+		t.Errorf("Expected tasks be empty but has %d members: %v", len(ts), ts)
 	}
 	task := NewTask("", "")
 	l.add(task)
-	if len(l.Tasks()) != 1 {
-		t.Errorf("Expected tasks len 0, but got %d", len(l.Tasks()))
+	if ts := l.Tasks(); len(ts) != 1 {
+		t.Errorf("Expected tasks len 1, but got %d: %v", len(ts), ts)
 	}
 }
 
