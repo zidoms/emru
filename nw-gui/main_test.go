@@ -90,3 +90,7 @@ func TestDeleteTask(t *testing.T) {
 		t.Fatalf("Expected list be empty, but has %d tasks", len(ts))
 	}
 }
+
+func init() {
+	list.DBFile = "emru.db"
+}

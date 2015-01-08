@@ -21,7 +21,7 @@ type List struct {
 
 var (
 	list   *List
-	dbFile string
+	DBFile string
 
 	TaskNotFound = errors.New("Task not found")
 )
@@ -52,7 +52,7 @@ func newList() *List {
 func (l *List) initDB() {
 	log.Finest("Initializing db")
 
-	db, err := sql.Open("sqlite3", dbFile)
+	db, err := sql.Open("sqlite3", DBFile)
 	if err != nil {
 		panic(err)
 	}
@@ -197,5 +197,8 @@ func (l *List) MarshalJSON() ([]byte, error) {
 }
 
 func init() {
-	dbFile = path.Join(os.Getenv("HOME"), ".local", "share", "emru") + "/emru.db"
+	if DBFile == "" {
+		DBFile = path.Join(os.Getenv("HOME"), ".local", "share", "emru")
+		DBFile += "/emru.db"
+	}
 }
