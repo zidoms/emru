@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"os"
+	"path"
 	"sort"
 	"time"
 
@@ -18,7 +20,8 @@ type List struct {
 }
 
 var (
-	list *List
+	list   *List
+	dbFile string
 
 	TaskNotFound = errors.New("Task not found")
 )
@@ -36,7 +39,9 @@ func Quit() {
 	if list == nil {
 		return
 	}
-	list.db.Close()
+	if list.db != nil {
+		list.db.Close()
+	}
 }
 
 func newList() *List {
@@ -47,7 +52,7 @@ func newList() *List {
 func (l *List) initDB() {
 	log.Finest("Initializing db")
 
-	db, err := sql.Open("sqlite3", "emru.db")
+	db, err := sql.Open("sqlite3", dbFile)
 	if err != nil {
 		panic(err)
 	}
@@ -189,4 +194,8 @@ func (l *List) MarshalJSON() ([]byte, error) {
 	}{
 		l.tasks,
 	})
+}
+
+func init() {
+	dbFile = path.Join(os.Getenv("HOME"), ".local", "share", "emru") + "/emru.db"
 }

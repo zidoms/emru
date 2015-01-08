@@ -74,3 +74,5 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default', ['compass', 'uglify', 'concat', 'htmlmin', 'watch']);
+
+gulp.task('build', ['compass', 'uglify', 'concat', 'htmlmin']);

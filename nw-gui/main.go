@@ -12,6 +12,10 @@ import (
 	"github.com/zidoms/emru/list/task"
 )
 
+var (
+	gui = "/usr/lib/emru/app"
+)
+
 func main() {
 	log.AddFilter("console", log.FINEST, log.NewConsoleLogWriter())
 	defer func() {
@@ -23,9 +27,9 @@ func main() {
 	}()
 
 	go serve()
-	_, err := exec.Command("nw", "--remote-debugging-port=9222", "./app", "4040").Output()
+	_, err := exec.Command(gui).Output()
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	}
 }
 
