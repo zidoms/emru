@@ -3,9 +3,14 @@
 window.App = {
 	Models: {},
 	Collections: {},
-	Views: {},
-	gui: require('nw.gui')
+	Views: {}
 };
+
+var gui = require('nw.gui'),
+	persianJs = require('persianjs'),
+	JDate = require('jalali-date'),
+	jdate = new JDate();
+
 
 window.template = function(id) {
 	return _.template($('#' + id + 'Template').html());
@@ -34,9 +39,12 @@ App.Views.Tasks = Backbone.View.extend({
 	id: 'list',
 
 	initialize: function() {
-		this.collection.on('add', this.addOne, this);
+		var today = jdate.format('dddd DD MMMM');
+		$('#title').html(persianJs(today).englishNumber().toString());
 
 		this.collection.fetch({success:this.start()});
+
+		this.collection.on('add', this.addOne, this);
 	},
 
 	start: function() {
