@@ -36,14 +36,12 @@ gulp.task('compass', function() {
 gulp.task('uglify', function() {
 	gulp.src(paths.js)
 		.pipe(uglify())
-		.on('error', handleError)
 		.pipe(gulp.dest(paths.dist));
 });
 
 gulp.task('concat', function() {
 	gulp.src(paths.libjs)
 		.pipe(concat('app.js'))
-		.on('error', handleError)
 		.pipe(gulp.dest(paths.dist));
 });
 
@@ -63,7 +61,6 @@ gulp.task('htmlmin', function() {
 				removeOptionalTags: true
 			})
 		)
-		.on('error', handleError)
 		.pipe(gulp.dest(paths.dist));
 });
 

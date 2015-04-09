@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"net/http"
-	"os/exec"
 	"strconv"
 
 	"github.com/bmizerany/pat"
@@ -12,25 +11,8 @@ import (
 	"github.com/zidoms/emru/list/task"
 )
 
-var (
-	gui = "/usr/lib/emru/app"
-)
-
 func main() {
-	log.AddFilter("console", log.FINEST, log.NewConsoleLogWriter())
-	defer func() {
-		list.Quit()
-		if err := recover(); err != nil {
-			log.Critical(err)
-		}
-		log.Close()
-	}()
 
-	go serve()
-	_, err := exec.Command(gui).Output()
-	if err != nil {
-		panic(err)
-	}
 }
 
 func serve() {
