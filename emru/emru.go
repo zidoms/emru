@@ -7,8 +7,8 @@ import (
 
 	"github.com/bmizerany/pat"
 	log "github.com/limetext/log4go"
-	"github.com/zidoms/emru/list"
-	"github.com/zidoms/emru/list/task"
+	"github.com/zoli/emru/list"
+	"github.com/zoli/emru/list/task"
 )
 
 func main() {

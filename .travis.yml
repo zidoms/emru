@@ -3,7 +3,7 @@ language: go
 go: 1.4
 
 install:
-    - go get github.com/zidoms/emru/nw-gui
+    - go get github.com/zoli/emru/nw-gui
 
 script:
     - go test ./...

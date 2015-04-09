@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/zidoms/emru/list/task"
+	. "github.com/zoli/emru/list/task"
 )
 
 func TestnewList(t *testing.T) {

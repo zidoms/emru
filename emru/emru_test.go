@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/zidoms/emru/list"
-	"github.com/zidoms/emru/list/task"
+	"github.com/zoli/emru/list"
+	"github.com/zoli/emru/list/task"
 )
 
 func TestTasks(t *testing.T) {

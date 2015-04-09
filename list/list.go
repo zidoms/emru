@@ -11,7 +11,7 @@ import (
 
 	log "github.com/limetext/log4go"
 	_ "github.com/mattn/go-sqlite3"
-	. "github.com/zidoms/emru/list/task"
+	. "github.com/zoli/emru/list/task"
 )
 
 type List struct {
