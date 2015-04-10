@@ -27,7 +27,6 @@ func NewTask(title, body string) *Task {
 		Done:      false,
 		CreatedAt: time.Now(),
 	}
-
 	return t
 }
 
