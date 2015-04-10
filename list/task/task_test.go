@@ -17,13 +17,6 @@ func TestNewTask(t *testing.T) {
 	}
 }
 
-func TestString(t *testing.T) {
-	task := NewTask("test", "body")
-	if task.String() != "Title: test, Body: body" {
-		t.Errorf("Expected task string %s, but got %s", "Title: test, Body: body", task.String())
-	}
-}
-
 func TestToggle(t *testing.T) {
 	tests := []struct {
 		s      Status

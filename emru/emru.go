@@ -26,7 +26,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	handler := &ListHandler{ls: make(map[string]list.List)}
+	handler := &ListHandler{ls: make(list.Lists)}
 	if http.Serve(l, handler); err != nil {
 		log.Critical(err)
 		panic(err)

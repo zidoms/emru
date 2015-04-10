@@ -11,7 +11,7 @@ import (
 )
 
 type ListHandler struct {
-	ls   map[string]*list.List
+	ls   list.Lists
 	req  *http.Request
 	data []byte
 }
@@ -123,22 +123,22 @@ func (h *ListHandler) deleteList(name string) {
 
 }
 
-func (h *ListHandler) tasks(l list.List) {
+func (h *ListHandler) tasks(l *list.List) {
 
 }
 
-func (h *ListHandler) task(l list.List, id int) {
+func (h *ListHandler) task(l *list.List, id int) {
 
 }
 
-func (h *ListHandler) newTask(l list.List) {
+func (h *ListHandler) newTask(l *list.List) {
 
 }
 
-func (h *ListHandler) updateTask(l list.List, id int) {
+func (h *ListHandler) updateTask(l *list.List, id int) {
 
 }
 
-func (h *ListHandler) deleteTask(l list.List, id int) {
+func (h *ListHandler) deleteTask(l *list.List, id int) {
 
 }

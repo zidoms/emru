@@ -8,7 +8,7 @@ import (
 	. "github.com/zoli/emru/list/task"
 )
 
-func TestnewList(t *testing.T) {
+func TestNewList(t *testing.T) {
 	l := newList()
 	if len(l.tasks) != 0 {
 		t.Errorf("Expected tasks be emty on new but is %d", len(l.tasks))
@@ -83,7 +83,8 @@ func TestMarshalJsonList(t *testing.T) {
 		t.Fatalf("Couldn't marshal list: %s", err)
 	}
 	jt, _ := json.Marshal(t1)
-	exp := fmt.Sprintf(`{"tasks":[%s]}`, string(jt))
+	time, _ := l.createdAt.MarshalJSON()
+	exp := fmt.Sprintf(`{"tasks":[%s],"created_at":%s}`, string(jt), string(time))
 	if string(b) != exp {
 		t.Errorf("Expected marshaled json %s, but got %s", exp, string(b))
 	}

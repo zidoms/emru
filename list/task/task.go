@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -21,17 +20,12 @@ type (
 )
 
 func NewTask(title, body string) *Task {
-	t := &Task{
+	return &Task{
 		Title:     title,
 		Body:      body,
 		Done:      false,
 		CreatedAt: time.Now(),
 	}
-	return t
-}
-
-func (t *Task) String() string {
-	return fmt.Sprintf("Title: %s, Body: %s", t.Title, t.Body)
 }
 
 func (s *Status) toggle() {
