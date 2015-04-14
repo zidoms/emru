@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewList(t *testing.T) {
-	l := newList()
+	l := NewList()
 	if len(l.tasks) != 0 {
 		t.Errorf("Expected tasks be emty on new but is %d", len(l.tasks))
 	}
@@ -29,7 +29,7 @@ func TestAdd(t *testing.T) {
 			"Second Test",
 		},
 	}
-	l := newList()
+	l := NewList()
 	for i, test := range tests {
 		task := NewTask(test.title, test.body)
 		l.add(task)
@@ -43,7 +43,7 @@ func TestAdd(t *testing.T) {
 }
 
 func TestRemove(t *testing.T) {
-	l := newList()
+	l := NewList()
 	t1 := NewTask("Task title", "Task Body")
 	l.add(t1)
 	l.remove(0)
@@ -53,7 +53,7 @@ func TestRemove(t *testing.T) {
 }
 
 func TestTasks(t *testing.T) {
-	l := newList()
+	l := NewList()
 	if ts := l.Tasks(); len(ts) != 0 {
 		t.Errorf("Expected tasks be empty but has %d members: %v", len(ts), ts)
 	}
@@ -65,7 +65,7 @@ func TestTasks(t *testing.T) {
 }
 
 func TestClearList(t *testing.T) {
-	l := newList()
+	l := NewList()
 	t1 := NewTask("Task title", "Task Body")
 	l.add(t1)
 	l.clear()
@@ -75,7 +75,7 @@ func TestClearList(t *testing.T) {
 }
 
 func TestMarshalJsonList(t *testing.T) {
-	l := newList()
+	l := NewList()
 	t1 := NewTask("Task title", "Task Body")
 	l.add(t1)
 	b, err := json.Marshal(l)
@@ -83,7 +83,7 @@ func TestMarshalJsonList(t *testing.T) {
 		t.Fatalf("Couldn't marshal list: %s", err)
 	}
 	jt, _ := json.Marshal(t1)
-	time, _ := l.createdAt.MarshalJSON()
+	time, _ := l.CreatedAt.MarshalJSON()
 	exp := fmt.Sprintf(`{"tasks":[%s],"created_at":%s}`, string(jt), string(time))
 	if string(b) != exp {
 		t.Errorf("Expected marshaled json %s, but got %s", exp, string(b))

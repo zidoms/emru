@@ -13,7 +13,7 @@ import (
 type (
 	List struct {
 		tasks     Tasks
-		createdAt time.Time
+		CreatedAt time.Time
 	}
 
 	Lists map[string]*List
@@ -21,8 +21,8 @@ type (
 
 var TaskNotFound = errors.New("Task not found")
 
-func newList() *List {
-	return &List{tasks: make(Tasks, 0), createdAt: time.Now()}
+func NewList() *List {
+	return &List{tasks: make(Tasks, 0), CreatedAt: time.Now()}
 }
 
 func (l *List) flush() {
@@ -108,6 +108,6 @@ func (l *List) MarshalJSON() ([]byte, error) {
 		CreatedAt time.Time `json:"created_at"`
 	}{
 		l.Tasks(),
-		l.createdAt,
+		l.CreatedAt,
 	})
 }
