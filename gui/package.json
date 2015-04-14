@@ -1,6 +1,6 @@
 {
   "name": "emru",
-  "main": "dist/index.html",
+  "main": "index.html",
   "version": "0.0.0",
   "description": "Today's To-do List",
   "keywords": [
