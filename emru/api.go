@@ -22,7 +22,7 @@ func (h *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.req = r
 	if err := h.parseReq(); err != nil {
 		log.Error(err)
-		http.NotFound(w, r)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -116,8 +116,7 @@ func (h *ListHandler) newList() (err error) {
 		Name  string     `json:"name"`
 		Tasks task.Tasks `json:"tasks"`
 	}
-	err = decoder.Decode(&nlst)
-	if err != nil {
+	if err = decoder.Decode(&nlst); err != nil {
 		return
 	}
 
@@ -150,18 +149,34 @@ func (h *ListHandler) tasks(l *list.List) (err error) {
 
 func (h *ListHandler) task(l *list.List, id int) (err error) {
 	task, err := l.Get(id)
+	if err != nil {
+		return
+	}
 	h.data, err = json.Marshal(task)
 	return
 }
 
 func (h *ListHandler) newTask(l *list.List) (err error) {
+	decoder := json.NewDecoder(h.req.Body)
+	tsk := task.New("", "")
+	if err = decoder.Decode(tsk); err != nil {
+		return
+	}
+	h.data, err = json.Marshal(l.Add(tsk))
 	return
 }
 
 func (h *ListHandler) updateTask(l *list.List, id int) (err error) {
+	tsk := task.Task{}
+	decoder := json.NewDecoder(h.req.Body)
+	if err = decoder.Decode(&tsk); err != nil {
+		return
+	}
+	err = l.Update(id, tsk)
 	return
 }
 
 func (h *ListHandler) deleteTask(l *list.List, id int) (err error) {
+	err = l.Remove(id)
 	return
 }
