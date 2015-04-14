@@ -9,6 +9,7 @@ import (
 
 	log "github.com/limetext/log4go"
 	"github.com/zoli/emru/list"
+	"github.com/zoli/emru/list/task"
 )
 
 type ListHandler struct {
@@ -111,19 +112,26 @@ func (h *ListHandler) list(name string) (err error) {
 
 func (h *ListHandler) newList() (err error) {
 	decoder := json.NewDecoder(h.req.Body)
-	var nList struct {
-		name string
-		lst  list.List
+	var nlst struct {
+		Name  string     `json:"name"`
+		Tasks task.Tasks `json:"tasks"`
 	}
-	err = decoder.Decode(&nList)
+	err = decoder.Decode(&nlst)
 	if err != nil {
 		return
 	}
 
-	if _, exist := h.ls[nList.name]; exist {
+	if nlst.Name == "" {
+		return errors.New("can not use empty name")
+	}
+	if _, exist := h.ls[nlst.Name]; exist {
 		return errors.New("this name currently exists")
 	}
-	h.ls[nList.name] = &nList.lst
+	lst := list.NewList()
+	for _, tsk := range nlst.Tasks {
+		lst.Add(tsk)
+	}
+	h.ls[nlst.Name] = lst
 	return
 }
 

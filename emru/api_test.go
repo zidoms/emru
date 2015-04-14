@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"testing"
 
 	"github.com/zoli/emru/list"
@@ -35,7 +38,31 @@ func TestList(t *testing.T) {
 }
 
 func TestNewList(t *testing.T) {
+	lh := new(ListHandler)
+	lh.ls = list.Lists{}
 
+	exp := task.NewTask("test", "test body")
+	tskjs, _ := json.Marshal(exp)
+	data := fmt.Sprintf(`{"name":"a","tasks":[%s]}`, string(tskjs))
+	buf := bytes.NewBufferString(data)
+
+	if req, err := http.NewRequest("POST", "/lists", buf); err != nil {
+		t.Fatal(err)
+	} else {
+		lh.req = req
+	}
+	if err := lh.newList(); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, exist := lh.ls["a"]; !exist {
+		t.Fatal("List with name a should exist")
+	}
+	if tsk, err := lh.ls["a"].Get(exp.Id); err != nil {
+		t.Fatal(err)
+	} else if tsk != *exp {
+		t.Errorf("Expected %v but got %v", *exp, tsk)
+	}
 }
 
 func TestDeleteList(t *testing.T) {
