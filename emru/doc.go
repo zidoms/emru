@@ -3,7 +3,6 @@
 // GET	/lists	all lists
 // POST	/lists	new list
 // GET	/lists/:name	list
-// PUT	/lists/:name	update list
 // DEL	/lists/:name	delete list
 //
 // GET	/lists/:name/tasks	list tasks
