@@ -19,7 +19,7 @@ type (
 	Status bool
 )
 
-func NewTask(title, body string) *Task {
+func New(title, body string) *Task {
 	return &Task{
 		Title:     title,
 		Body:      body,

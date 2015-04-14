@@ -17,9 +17,9 @@ func TestLists(t *testing.T) {
 
 func TestList(t *testing.T) {
 	lh := new(ListHandler)
-	lh.ls = list.Lists{"a": list.NewList()}
+	lh.ls = list.Lists{"a": list.New()}
 
-	tsk := task.NewTask("test", "test body")
+	tsk := task.New("test", "test body")
 	lh.ls["a"].Add(tsk)
 
 	tCreatedAt, _ := tsk.CreatedAt.MarshalJSON()
@@ -41,7 +41,7 @@ func TestNewList(t *testing.T) {
 	lh := new(ListHandler)
 	lh.ls = list.Lists{}
 
-	exp := task.NewTask("test", "test body")
+	exp := task.New("test", "test body")
 	tskjs, _ := json.Marshal(exp)
 	data := fmt.Sprintf(`{"name":"a","tasks":[%s]}`, string(tskjs))
 	buf := bytes.NewBufferString(data)
@@ -67,7 +67,7 @@ func TestNewList(t *testing.T) {
 
 func TestDeleteList(t *testing.T) {
 	lh := new(ListHandler)
-	lh.ls = list.Lists{"a": list.NewList()}
+	lh.ls = list.Lists{"a": list.New()}
 
 	if err := lh.deleteList("b"); err == nil {
 		t.Error("Expected error on deleting not existing list")

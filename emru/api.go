@@ -127,7 +127,7 @@ func (h *ListHandler) newList() (err error) {
 	if _, exist := h.ls[nlst.Name]; exist {
 		return errors.New("this name currently exists")
 	}
-	lst := list.NewList()
+	lst := list.New()
 	for _, tsk := range nlst.Tasks {
 		lst.Add(tsk)
 	}

@@ -5,7 +5,7 @@ import (
 )
 
 func TestNewTask(t *testing.T) {
-	task := NewTask("test", "body")
+	task := New("test", "body")
 	if task.Title != "test" {
 		t.Errorf("Expected task title %s, but got %s", "test", task.Title)
 	}
