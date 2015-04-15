@@ -5,31 +5,29 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>emru</title>
 	<link rel="stylesheet" href="styles/app.css">
-</head>
-<body>
-	<header>
-		<div id="title">امروز</div>
-		<ul id="actions">
-			<li class="action"><a title="کار جدید" class="hover-link icon-add add"></a></li>
-		</ul>
-	</header>
-	<main>
-		<form id="add">
-			<input type="text" name="task" placeholder="کار جدید...">
-		</form>
-		<script id="taskTemplate"  type="text/template">
-			<div class="main">
-				<div class="title"><%= title %></div>
-				<ul class="actions">
-					<li class="action"><a class="hover-link icon-done status"></a></li>
-					<li class="action"><a class="hover-link icon-cancel remove"></a></li>
-				</ul>
-			</div>
-		</script>
-	</main>
 	<script src="js/libs/jquery.js"></script>
 	<script src="js/libs/underscore.js"></script>
 	<script src="js/libs/backbone.js"></script>
 	<script src="js/app.js"></script>
+</head>
+<body>
+	<header>
+		<!-- global actions -->
+	</header>
+	<main>
+		<header>
+			<ul>
+				<!-- lists -->
+			</ul>
+			<ul>
+				<!-- list actions -->
+			</ul>
+		</header>
+		<section>
+			<ul>
+				<!-- tasks -->
+			</ul>
+		</section>
+	</main>
 </body>
 </html>

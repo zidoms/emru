@@ -3,8 +3,7 @@
 window.App = {
 	Models: {},
 	Collections: {},
-	Views: {},
-	gui: require('nw.gui')
+	Views: {}
 };
 
 window.template = function(id) {

@@ -2,6 +2,8 @@ GUI:
 	—	3 lists today, week, month
 	—	easy installation
 	—	simple icon
+	—	support english language
+	—	support persian language
 Backend:
-	—	complete api
+	✔	complete api @done (15-04-15 17:29)
 	—	simple build
