@@ -21,8 +21,8 @@ gulp.task('compass', function() {
 });
 
 gulp.task('watch', function() {
-	gulp.watch('styles/sass', ['compass']);
+	gulp.watch('styles/sass/*', ['compass']);
 });
 
-gulp.task('watch', ['compass', 'watch']);
 gulp.task('default', ['compass']);
+gulp.task('dev', ['watch', 'default']);

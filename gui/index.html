@@ -12,20 +12,41 @@
 </head>
 <body>
 	<header>
-		<!-- global actions -->
+		<ul id="global-actions">
+			<li class="action"></li>
+		</ul>
 	</header>
 	<main>
 		<header>
-			<ul>
-				<!-- lists -->
+			<ul id="lists">
+				<li><h1><a href="">Today</a></h1></li>
+				<li><h1><a href="">Week</a></h1></li>
+				<li><h1><a href="">Month</a></h1></li>
 			</ul>
-			<ul>
-				<!-- list actions -->
+			<ul id="list-actions">
+				<li class="action">
+					<a title="New Task" class="hover-link icon-add add"></a>
+				</li>
 			</ul>
 		</header>
 		<section>
-			<ul>
-				<!-- tasks -->
+			<ul id="tasks">
+				<li class="task">
+					<section class="task-main">
+						<div class="task-title">
+							<h2><a href=""></a></h2>
+						</div>
+						<div class="task-body"></div>
+					</section>
+					<ul id="task-actions">
+						<li class="action">
+							<a class="hover-link icon-done status"></a>
+						</li>
+						<li class="action">
+							<a class="hover-link icon-cancel remove"></a>
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</section>
 	</main>

@@ -5,3 +5,5 @@ App.Views.Task = Backbone.View.extend({
 App.Views.List = Backbone.View.extend({
 	tagName: 'ul',
 });
+
+App.Views.App = Backbone.View.extend({});
