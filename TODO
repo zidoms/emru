@@ -4,6 +4,7 @@ GUI:
 	—	simple icon
 	—	support english language
 	—	support persian language
+	—	task body markdown support
 Backend:
 	✔	complete api @done (15-04-15 17:29)
 	—	simple build
