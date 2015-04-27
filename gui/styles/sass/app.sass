@@ -13,11 +13,10 @@ a
     cursor: pointer
 
 .action
-  opacity: 0.6
-  &:hover
-    opacity: 1
-  &.active
-    opacity: 1
+  a
+    color: #aaa
+    &:hover, &:active
+      color: #fff
 
 header
   font-size: 1.3em
@@ -42,6 +41,10 @@ main
       color: #000
       &:hover
         color: #fff
+
+#list
+  header
+    font-size: 0.8em
 
 .task
   border-bottom: 1px solid #313639
