@@ -30,35 +30,22 @@
 			</ul> -->
 		</header>
 		<section id="list">
-			<ul id="tasks">
-				<li class="task">
-					<section class="task-main">
-						<div class="task-title">
-							<a>Finish emru gui design</a>
-						</div>
-						<div class="task-body">
-							<p>better emru gui design with body support for tasks and markdown</p>
-						</div>
-					</section>
-					<ul class="task-actions">
-						<li class="action">
-							<a class="hover-link icon-done status"></a>
-						</li>
-						<li class="action">
-							<a class="hover-link icon-cancel remove"></a>
-						</li>
-					</ul>
-				</li>
-			</ul>
+			<ul id="tasks"></ul>
 		</section>
 	</main>
+	<script id="task-template" type="text/template">
+		<section class="task-main">
+			<div class="task-title"><a><%= title %></a></div>
+			<div class="task-body"><p><%= body %></p></div>
+		</section>
+		<ul class="task-actions">
+			<li class="action">
+				<a class="hover-link icon-done status"></a>
+			</li>
+			<li class="action">
+				<a class="hover-link icon-cancel remove"></a>
+			</li>
+		</ul>
+	</script>
 </body>
-<script>
-	var gulp = require('gulp');
-	gulp.task('reload', function () {
-	if (location) location.reload();
-	});
-
-	gulp.watch('**/*', ['reload']);
-</script>
 </html>
