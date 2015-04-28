@@ -42,9 +42,18 @@ App.Views.List = Backbone.View.extend({
 	tagName: 'section',
 	id: 'list',
 
-	events: {},
+	events: {
+		'click .add-task': 'renderAdd',
+		'submit #add': 'addTask'
+	},
 
 	initialize: function() {},
+
+	renderAdd: function() {
+		$('#add').toggle();
+	},
+
+	addTask: function() {},
 
 	render: function() {},
 
@@ -55,9 +64,15 @@ App.Views.Lists = Backbone.View.extend({
 	tagName: 'ul',
 	id: 'lists',
 
-	events: {},
+	events: {
+		'click #lists li': 'changeList'
+	},
 
-	initialize: function() {},
+	initialize: function() {
+		this.collection = new App.Collections.Lists();
+	},
+
+	changeList: function() {},
 
 	render: function() {},
 
