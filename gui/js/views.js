@@ -43,7 +43,9 @@ App.Views.List = Backbone.View.extend({
 	id: 'list',
 
 	events: {
-		'click .add-task': 'renderAdd',
+		'click .add': 'renderAdd',
+		'click .clear': 'clear',
+		'click .search': 'renderSearch',
 		'submit #add': 'addTask'
 	},
 

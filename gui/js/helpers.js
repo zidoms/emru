@@ -66,7 +66,7 @@ var methodMap = {
 // dev
 var gulp = require('gulp');
 gulp.task('reload', function () {
-if (location) location.reload();
+	if (location) location.reload();
 });
 
 gulp.watch('**/*', ['reload']);
