@@ -46,12 +46,19 @@ main
   header
     font-size: 0.8em
 
+#list-actions
+  +clearfix
+  .action
+    float: right
+    margin: 0 6px
+
 #add
   padding: 0 5px 0 20px
   border-bottom: 1px solid #313639
   background-color: #313639
   display: none
   input
+    width: 100%
     +default-font
     +reset-box-model
     +reset-focus

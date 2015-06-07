@@ -70,9 +70,7 @@ App.Views.Lists = Backbone.View.extend({
 		'click #lists li': 'changeList'
 	},
 
-	initialize: function() {
-		this.collection = new App.Collections.Lists();
-	},
+	initialize: function() {},
 
 	changeList: function() {},
 

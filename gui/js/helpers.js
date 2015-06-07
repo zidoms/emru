@@ -52,7 +52,7 @@ Backbone.sync = function(method, model, options) {
 		}
 		return options.success(body);
 	});
-}
+};
 
 // Map from CRUD to HTTP for our default `Backbone.sync` implementation.
 var methodMap = {
