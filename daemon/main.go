@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	log "github.com/limetext/log4go"
-	"github.com/zoli/emru/list"
+	"github.com/zoli/emru/api"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	handler := &ListHandler{ls: make(list.Lists)}
+	handler := new(api.ListHandler)
 	if http.Serve(l, handler); err != nil {
 		log.Critical(err)
 		panic(err)
