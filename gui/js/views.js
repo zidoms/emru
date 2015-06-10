@@ -39,8 +39,7 @@ App.Views.Task = Backbone.View.extend({
 });
 
 App.Views.List = Backbone.View.extend({
-	tagName: 'section',
-	id: 'list',
+	el: $('#list'),
 
 	events: {
 		'click .add': 'renderAdd',
@@ -63,18 +62,23 @@ App.Views.List = Backbone.View.extend({
 });
 
 App.Views.Lists = Backbone.View.extend({
-	tagName: 'ul',
-	id: 'lists',
+	el: 'main',
 
 	events: {
-		'click #lists li': 'changeList'
+		'click #lists li a': 'changeList'
 	},
 
-	initialize: function() {},
+	initialize: function() {
+		this.lists = new App.Collections.Lists();
+		this.list = this.lists.get(0);
+
+		this.render();
+
+		this.listView = new App.Views.List();
+		this.listView.list = this.list;
+	},
 
 	changeList: function() {},
 
-	render: function() {},
-
-	unrender: function() {}
+	render: function() {}
 });

@@ -25,7 +25,7 @@ Backbone.sync = function(method, model, options) {
 		params.url = _.result(model, 'url') || urlError();
 	}
 	// Ensure that we have the appropriate request data.
-	if (options.data == null && model && (method === 'create' || method === 'update' || method === 'patch')) {
+	if (options.data === null && model && (method === 'create' || method === 'update' || method === 'patch')) {
 		params.contentType = 'application/json';
 		params.data = JSON.stringify(options.attrs || model.toJSON(options));
 	}
