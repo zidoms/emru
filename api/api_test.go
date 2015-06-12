@@ -7,16 +7,15 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/zoli/emru/list"
-	"github.com/zoli/emru/list/task"
+	"github.com/zoli/emru/emru"
 )
 
 func TestLists(t *testing.T) {
 	lh := NewHandler()
-	lh.ls = list.Lists{"a": list.New(), "b": list.New()}
+	lh.ls = emru.Lists{"a": emru.NewList(), "b": emru.NewList()}
 	lh.req = new(http.Request)
 
-	tsk := task.New("test", "test body")
+	tsk := emru.NewTask("test", "test body")
 	lh.ls["a"].Add(tsk)
 
 	tCreatedAt, _ := tsk.CreatedAt.MarshalJSON()
@@ -37,10 +36,10 @@ func TestLists(t *testing.T) {
 
 func TestList(t *testing.T) {
 	lh := NewHandler()
-	lh.ls = list.Lists{"a": list.New()}
+	lh.ls = emru.Lists{"a": emru.NewList()}
 	lh.req = new(http.Request)
 
-	tsk := task.New("test", "test body")
+	tsk := emru.NewTask("test", "test body")
 	lh.ls["a"].Add(tsk)
 
 	tCreatedAt, _ := tsk.CreatedAt.MarshalJSON()
@@ -62,7 +61,7 @@ func TestList(t *testing.T) {
 func TestNewList(t *testing.T) {
 	lh := NewHandler()
 
-	exp := task.New("test", "test body")
+	exp := emru.NewTask("test", "test body")
 	tskjs, _ := json.Marshal(exp)
 	data := fmt.Sprintf(`{"name":"a","tasks":[%s]}`, string(tskjs))
 	buf := bytes.NewBufferString(data)
@@ -88,7 +87,7 @@ func TestNewList(t *testing.T) {
 
 func TestDeleteList(t *testing.T) {
 	lh := NewHandler()
-	lh.ls = list.Lists{"a": list.New()}
+	lh.ls = emru.Lists{"a": emru.NewList()}
 
 	if err := lh.deleteList("b"); err == nil {
 		t.Error("Expected error on deleting not existing list")
@@ -103,10 +102,10 @@ func TestDeleteList(t *testing.T) {
 
 func TestTasks(t *testing.T) {
 	lh := NewHandler()
-	lh.ls = list.Lists{"a": list.New()}
+	lh.ls = emru.Lists{"a": emru.NewList()}
 	lh.req = new(http.Request)
 
-	tsk := task.New("title", "test body")
+	tsk := emru.NewTask("title", "test body")
 	lh.ls["a"].Add(tsk)
 
 	lh.req.Method = "GET"
@@ -122,9 +121,9 @@ func TestTasks(t *testing.T) {
 
 func TestTask(t *testing.T) {
 	lh := NewHandler()
-	lh.ls = list.Lists{"a": list.New()}
+	lh.ls = emru.Lists{"a": emru.NewList()}
 
-	tsk := task.New("title", "test body")
+	tsk := emru.NewTask("title", "test body")
 	lh.ls["a"].Add(tsk)
 
 	if err := lh.task(lh.ls["a"], tsk.ID); err != nil {
@@ -139,9 +138,9 @@ func TestTask(t *testing.T) {
 
 func TestNewTask(t *testing.T) {
 	lh := NewHandler()
-	lh.ls = list.Lists{"a": list.New()}
+	lh.ls = emru.Lists{"a": emru.NewList()}
 
-	tsk := task.New("title", "test body")
+	tsk := emru.NewTask("title", "test body")
 	tsk.ID = 1
 	tskjs, _ := json.Marshal(tsk)
 	buf := bytes.NewBufferString(string(tskjs))
@@ -164,9 +163,9 @@ func TestNewTask(t *testing.T) {
 
 func TestUpdateTask(t *testing.T) {
 	lh := NewHandler()
-	lh.ls = list.Lists{"a": list.New()}
+	lh.ls = emru.Lists{"a": emru.NewList()}
 
-	tsk := task.New("test", "test body")
+	tsk := emru.NewTask("test", "test body")
 	lh.ls["a"].Add(tsk)
 	tsk.Title = "new"
 	tskjs, _ := json.Marshal(tsk)
@@ -190,10 +189,10 @@ func TestUpdateTask(t *testing.T) {
 
 func TestDeleteTask(t *testing.T) {
 	lh := NewHandler()
-	lh.ls = list.Lists{"a": list.New()}
+	lh.ls = emru.Lists{"a": emru.NewList()}
 	lh.req = new(http.Request)
 
-	tsk := task.New("test", "test body")
+	tsk := emru.NewTask("test", "test body")
 	lh.ls["a"].Add(tsk)
 
 	lh.req.Method = "DELETE"

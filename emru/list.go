@@ -1,4 +1,4 @@
-package list
+package emru
 
 import (
 	"encoding/json"
@@ -6,12 +6,11 @@ import (
 	"time"
 
 	log "github.com/limetext/log4go"
-	"github.com/zoli/emru/list/task"
 )
 
 type (
 	List struct {
-		tasks     []*task.Task
+		tasks     []*Task
 		CreatedAt time.Time
 	}
 
@@ -20,11 +19,11 @@ type (
 
 var TaskNotFound = errors.New("Task not found")
 
-func New() *List {
+func NewList() *List {
 	return &List{CreatedAt: time.Now()}
 }
 
-func (l *List) add(t *task.Task) {
+func (l *List) add(t *Task) {
 	for l.Exists(t.ID) {
 		t.ID++
 	}
@@ -32,7 +31,7 @@ func (l *List) add(t *task.Task) {
 	l.tasks = append(l.tasks, t)
 }
 
-func (l *List) Add(t *task.Task) task.Task {
+func (l *List) Add(t *Task) Task {
 	l.add(t)
 	return *t
 }
@@ -55,7 +54,7 @@ func (l *List) Remove(id int) error {
 	return nil
 }
 
-func (l *List) update(i int, t task.Task) {
+func (l *List) update(i int, t Task) {
 	log.Debug("Updating task %v to %v", *l.tasks[i], t)
 	nt := l.tasks[i]
 	nt.Title = t.Title
@@ -63,7 +62,7 @@ func (l *List) update(i int, t task.Task) {
 	nt.Done = t.Done
 }
 
-func (l *List) Update(id int, t task.Task) error {
+func (l *List) Update(id int, t Task) error {
 	i := l.Index(id)
 	if i == -1 {
 		return TaskNotFound
@@ -72,16 +71,16 @@ func (l *List) Update(id int, t task.Task) error {
 	return nil
 }
 
-func (l *List) Get(id int) (task.Task, error) {
+func (l *List) Get(id int) (Task, error) {
 	i := l.Index(id)
 	if i == -1 {
-		return task.Task{}, TaskNotFound
+		return Task{}, TaskNotFound
 	}
 	return *l.tasks[i], nil
 }
 
-func (l *List) Tasks() []task.Task {
-	r := make([]task.Task, 0, len(l.tasks))
+func (l *List) Tasks() []Task {
+	r := make([]Task, 0, len(l.tasks))
 	for _, t := range l.tasks {
 		r = append(r, *t)
 	}
@@ -117,8 +116,8 @@ func (l *List) Index(id int) int {
 
 func (l *List) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Tasks     []task.Task `json:"tasks"`
-		CreatedAt time.Time   `json:"created_at"`
+		Tasks     []Task    `json:"tasks"`
+		CreatedAt time.Time `json:"created_at"`
 	}{
 		l.Tasks(),
 		l.CreatedAt,

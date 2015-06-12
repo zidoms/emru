@@ -8,12 +8,11 @@ import (
 	"strings"
 
 	log "github.com/limetext/log4go"
-	"github.com/zoli/emru/list"
-	"github.com/zoli/emru/list/task"
+	"github.com/zoli/emru/emru"
 )
 
 type ListHandler struct {
-	ls   list.Lists
+	ls   emru.Lists
 	req  *http.Request
 	data []byte
 }
@@ -25,7 +24,7 @@ var (
 )
 
 func NewHandler() *ListHandler {
-	return &ListHandler{ls: make(list.Lists)}
+	return &ListHandler{ls: make(emru.Lists)}
 }
 
 func (h *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -96,7 +95,7 @@ func (h *ListHandler) newList() error {
 	decoder := json.NewDecoder(h.req.Body)
 	var nlst struct {
 		Name  string       `json:"name"`
-		Tasks []*task.Task `json:"tasks"`
+		Tasks []*emru.Task `json:"tasks"`
 	}
 	if err := decoder.Decode(&nlst); err != nil {
 		return err
@@ -108,7 +107,7 @@ func (h *ListHandler) newList() error {
 	if _, exist := h.ls[nlst.Name]; exist {
 		return errors.New("this name currently exists")
 	}
-	lst := list.New()
+	lst := emru.NewList()
 	for _, tsk := range nlst.Tasks {
 		lst.Add(tsk)
 	}
@@ -136,7 +135,7 @@ func (h *ListHandler) deleteList(name string) error {
 	return nil
 }
 
-func (h *ListHandler) tasksReq(l *list.List) (err error) {
+func (h *ListHandler) tasksReq(l *emru.List) (err error) {
 	switch h.req.Method {
 	case "GET":
 		h.data, err = json.Marshal(l.Tasks())
@@ -148,9 +147,9 @@ func (h *ListHandler) tasksReq(l *list.List) (err error) {
 	}
 }
 
-func (h *ListHandler) newTask(l *list.List) (err error) {
+func (h *ListHandler) newTask(l *emru.List) (err error) {
 	decoder := json.NewDecoder(h.req.Body)
-	tsk := task.New("", "")
+	tsk := emru.NewTask("", "")
 	if err = decoder.Decode(tsk); err != nil {
 		return
 	}
@@ -158,7 +157,7 @@ func (h *ListHandler) newTask(l *list.List) (err error) {
 	return
 }
 
-func (h *ListHandler) taskReq(l *list.List, id int) error {
+func (h *ListHandler) taskReq(l *emru.List, id int) error {
 	switch h.req.Method {
 	case "GET":
 		return h.task(l, id)
@@ -171,7 +170,7 @@ func (h *ListHandler) taskReq(l *list.List, id int) error {
 	}
 }
 
-func (h *ListHandler) task(l *list.List, id int) error {
+func (h *ListHandler) task(l *emru.List, id int) error {
 	task, err := l.Get(id)
 	if err != nil {
 		return err
@@ -180,8 +179,8 @@ func (h *ListHandler) task(l *list.List, id int) error {
 	return err
 }
 
-func (h *ListHandler) updateTask(l *list.List, id int) error {
-	tsk := task.Task{}
+func (h *ListHandler) updateTask(l *emru.List, id int) error {
+	tsk := emru.Task{}
 	decoder := json.NewDecoder(h.req.Body)
 	if err := decoder.Decode(&tsk); err != nil {
 		return err

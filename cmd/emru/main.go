@@ -12,7 +12,7 @@ import (
 	"strconv"
 
 	"github.com/fatih/color"
-	"github.com/zoli/emru/list"
+	"github.com/zoli/emru/emru"
 )
 
 type SocketTransport struct{ path string }
@@ -82,7 +82,7 @@ func printLists() error {
 		return err
 	}
 
-	var ls list.Lists
+	var ls emru.Lists
 	if err = json.Unmarshal(data, &ls); err != nil {
 		return err
 	}

@@ -1,11 +1,11 @@
-package task
+package emru
 
 import (
 	"testing"
 )
 
 func TestNewTask(t *testing.T) {
-	task := New("test", "body")
+	task := NewTask("test", "body")
 	if task.Title != "test" {
 		t.Errorf("Expected task title %s, but got %s", "test", task.Title)
 	}

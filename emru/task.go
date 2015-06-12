@@ -1,4 +1,4 @@
-package task
+package emru
 
 import (
 	"time"
@@ -17,7 +17,7 @@ type (
 	Status bool
 )
 
-func New(title, body string) *Task {
+func NewTask(title, body string) *Task {
 	return &Task{
 		Title:     title,
 		Body:      body,
