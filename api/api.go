@@ -18,10 +18,14 @@ type ListHandler struct {
 	data []byte
 }
 
+var (
+	invalidReqErr      = errors.New("invalid request")
+	undefinedMethodErr = errors.New("undefined method")
+	listNotFoundErr    = errors.New("list not found")
+)
+
 func NewHandler() *ListHandler {
-	lh := new(ListHandler)
-	lh.ls = make(list.Lists)
-	return lh
+	return &ListHandler{ls: make(list.Lists)}
 }
 
 func (h *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -42,88 +46,60 @@ func (h *ListHandler) parseReq() error {
 	url := strings.TrimRight(h.req.URL.Path, "/")
 
 	if url[:6] != "/lists" {
-		return errors.New("invalid request")
+		return invalidReqErr
 	}
-	if len(url) == 6 {
-		switch h.req.Method {
-		case "GET":
-			h.lists()
-		case "POST":
-			h.newList()
-		default:
-			return errors.New("undefined method")
-		}
-		return nil
+	if url == "/lists" {
+		return h.listsReq()
 	}
 
 	path := strings.Split(url[6:], "/")
+	if len(path) > 3 {
+		return invalidReqErr
+	}
 	name := path[0]
 	l, exist := h.ls[name]
 	if !exist {
-		return errors.New("list " + name + " not found")
+		return listNotFoundErr
 	}
+
 	if len(path) == 1 {
-		switch h.req.Method {
-		case "GET":
-			return h.list(name)
-		case "DELETE":
-			return h.deleteList(name)
-		default:
-			return errors.New("undefined method")
-		}
+		return h.listReq(name)
 	}
 
 	if path[1] != "tasks" {
-		return errors.New("invalid request")
+		return invalidReqErr
 	}
 	if len(path) == 2 {
-		switch h.req.Method {
-		case "GET":
-			return h.tasks(l)
-		case "POST":
-			return h.newTask(l)
-		default:
-			return errors.New("undefined method")
-		}
+		return h.tasksReq(l)
 	}
 
-	if len(path) > 3 {
-		return errors.New("invalid request")
-	}
 	id, err := strconv.Atoi(path[2])
 	if err != nil {
-		return errors.New("invalid task id")
+		return undefinedMethodErr
 	}
+	return h.taskReq(l, id)
+}
+
+func (h *ListHandler) listsReq() (err error) {
 	switch h.req.Method {
 	case "GET":
-		return h.task(l, id)
-	case "PUT":
-		return h.updateTask(l, id)
-	case "DELETE":
-		return h.deleteTask(l, id)
+		h.data, err = json.Marshal(h.ls)
+		return
+	case "POST":
+		return h.newList()
 	default:
-		return errors.New("undefined method")
+		return undefinedMethodErr
 	}
 }
 
-func (h *ListHandler) lists() (err error) {
-	h.data, err = json.Marshal(h.ls)
-	return err
-}
-
-func (h *ListHandler) list(name string) (err error) {
-	h.data, err = json.Marshal(h.ls[name])
-	return
-}
-
-func (h *ListHandler) newList() (err error) {
+func (h *ListHandler) newList() error {
 	decoder := json.NewDecoder(h.req.Body)
 	var nlst struct {
-		Name  string     `json:"name"`
-		Tasks task.Tasks `json:"tasks"`
+		Name  string       `json:"name"`
+		Tasks []*task.Task `json:"tasks"`
 	}
-	if err = decoder.Decode(&nlst); err != nil {
-		return
+	if err := decoder.Decode(&nlst); err != nil {
+		return err
 	}
 
 	if nlst.Name == "" {
@@ -137,29 +113,39 @@ func (h *ListHandler) newList() (err error) {
 		lst.Add(tsk)
 	}
 	h.ls[nlst.Name] = lst
-	return
+	return nil
 }
 
-func (h *ListHandler) deleteList(name string) (err error) {
+func (h *ListHandler) listReq(name string) (err error) {
+	switch h.req.Method {
+	case "GET":
+		h.data, err = json.Marshal(h.ls[name])
+		return
+	case "DELETE":
+		return h.deleteList(name)
+	default:
+		return undefinedMethodErr
+	}
+}
+
+func (h *ListHandler) deleteList(name string) error {
 	if _, exist := h.ls[name]; !exist {
 		return errors.New("list doesn't exist")
 	}
 	delete(h.ls, name)
-	return
+	return nil
 }
 
-func (h *ListHandler) tasks(l *list.List) (err error) {
-	h.data, err = json.Marshal(l.Tasks())
-	return
-}
-
-func (h *ListHandler) task(l *list.List, id int) (err error) {
-	task, err := l.Get(id)
-	if err != nil {
+func (h *ListHandler) tasksReq(l *list.List) (err error) {
+	switch h.req.Method {
+	case "GET":
+		h.data, err = json.Marshal(l.Tasks())
 		return
+	case "POST":
+		return h.newTask(l)
+	default:
+		return undefinedMethodErr
 	}
-	h.data, err = json.Marshal(task)
-	return
 }
 
 func (h *ListHandler) newTask(l *list.List) (err error) {
@@ -172,17 +158,33 @@ func (h *ListHandler) newTask(l *list.List) (err error) {
 	return
 }
 
-func (h *ListHandler) updateTask(l *list.List, id int) (err error) {
-	tsk := task.Task{}
-	decoder := json.NewDecoder(h.req.Body)
-	if err = decoder.Decode(&tsk); err != nil {
-		return
+func (h *ListHandler) taskReq(l *list.List, id int) error {
+	switch h.req.Method {
+	case "GET":
+		return h.task(l, id)
+	case "PUT":
+		return h.updateTask(l, id)
+	case "DELETE":
+		return l.Remove(id)
+	default:
+		return undefinedMethodErr
 	}
-	err = l.Update(id, tsk)
-	return
 }
 
-func (h *ListHandler) deleteTask(l *list.List, id int) (err error) {
-	err = l.Remove(id)
-	return
+func (h *ListHandler) task(l *list.List, id int) error {
+	task, err := l.Get(id)
+	if err != nil {
+		return err
+	}
+	h.data, err = json.Marshal(task)
+	return err
+}
+
+func (h *ListHandler) updateTask(l *list.List, id int) error {
+	tsk := task.Task{}
+	decoder := json.NewDecoder(h.req.Body)
+	if err := decoder.Decode(&tsk); err != nil {
+		return err
+	}
+	return l.Update(id, tsk)
 }

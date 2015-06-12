@@ -3,7 +3,6 @@ package list
 import (
 	"encoding/json"
 	"errors"
-	"sort"
 	"time"
 
 	log "github.com/limetext/log4go"
@@ -12,7 +11,7 @@ import (
 
 type (
 	List struct {
-		tasks     task.Tasks
+		tasks     []*task.Task
 		CreatedAt time.Time
 	}
 
@@ -22,16 +21,12 @@ type (
 var TaskNotFound = errors.New("Task not found")
 
 func New() *List {
-	return &List{tasks: make(task.Tasks, 0), CreatedAt: time.Now()}
-}
-
-func (l *List) flush() {
-	sort.Sort(l.tasks)
+	return &List{CreatedAt: time.Now()}
 }
 
 func (l *List) add(t *task.Task) {
-	for l.tasks.Exists(t.Id) {
-		t.Id++
+	for l.Exists(t.ID) {
+		t.ID++
 	}
 	log.Finest("Adding task %v", *t)
 	l.tasks = append(l.tasks, t)
@@ -52,7 +47,7 @@ func (l *List) remove(i int) {
 }
 
 func (l *List) Remove(id int) error {
-	i := l.tasks.Index(id)
+	i := l.Index(id)
 	if i == -1 {
 		return TaskNotFound
 	}
@@ -69,7 +64,7 @@ func (l *List) update(i int, t task.Task) {
 }
 
 func (l *List) Update(id int, t task.Task) error {
-	i := l.tasks.Index(id)
+	i := l.Index(id)
 	if i == -1 {
 		return TaskNotFound
 	}
@@ -78,7 +73,7 @@ func (l *List) Update(id int, t task.Task) error {
 }
 
 func (l *List) Get(id int) (task.Task, error) {
-	i := l.tasks.Index(id)
+	i := l.Index(id)
 	if i == -1 {
 		return task.Task{}, TaskNotFound
 	}
@@ -100,6 +95,24 @@ func (l *List) clear() {
 
 func (l *List) Clear() {
 	l.clear()
+}
+
+func (l *List) Exists(id int) bool {
+	for _, t := range l.tasks {
+		if t.ID == id {
+			return true
+		}
+	}
+	return false
+}
+
+func (l *List) Index(id int) int {
+	for i, t := range l.tasks {
+		if t.ID == id {
+			return i
+		}
+	}
+	return -1
 }
 
 func (l *List) MarshalJSON() ([]byte, error) {
