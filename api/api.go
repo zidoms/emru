@@ -18,6 +18,12 @@ type ListHandler struct {
 	data []byte
 }
 
+func NewHandler() *ListHandler {
+	lh := new(ListHandler)
+	lh.ls = make(list.Lists)
+	return lh
+}
+
 func (h *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.req = r
 	if err := h.parseReq(); err != nil {

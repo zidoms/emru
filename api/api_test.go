@@ -12,7 +12,7 @@ import (
 )
 
 func TestLists(t *testing.T) {
-	lh := new(ListHandler)
+	lh := NewHandler()
 	lh.ls = list.Lists{"a": list.New(), "b": list.New()}
 
 	tsk := task.New("test", "test body")
@@ -34,7 +34,7 @@ func TestLists(t *testing.T) {
 }
 
 func TestList(t *testing.T) {
-	lh := new(ListHandler)
+	lh := NewHandler()
 	lh.ls = list.Lists{"a": list.New()}
 
 	tsk := task.New("test", "test body")
@@ -56,8 +56,7 @@ func TestList(t *testing.T) {
 }
 
 func TestNewList(t *testing.T) {
-	lh := new(ListHandler)
-	lh.ls = list.Lists{}
+	lh := NewHandler()
 
 	exp := task.New("test", "test body")
 	tskjs, _ := json.Marshal(exp)
@@ -84,7 +83,7 @@ func TestNewList(t *testing.T) {
 }
 
 func TestDeleteList(t *testing.T) {
-	lh := new(ListHandler)
+	lh := NewHandler()
 	lh.ls = list.Lists{"a": list.New()}
 
 	if err := lh.deleteList("b"); err == nil {
@@ -99,7 +98,7 @@ func TestDeleteList(t *testing.T) {
 }
 
 func TestTasks(t *testing.T) {
-	lh := new(ListHandler)
+	lh := NewHandler()
 	lh.ls = list.Lists{"a": list.New()}
 
 	tsk := task.New("title", "test body")
@@ -116,7 +115,7 @@ func TestTasks(t *testing.T) {
 }
 
 func TestTask(t *testing.T) {
-	lh := new(ListHandler)
+	lh := NewHandler()
 	lh.ls = list.Lists{"a": list.New()}
 
 	tsk := task.New("title", "test body")
@@ -133,7 +132,7 @@ func TestTask(t *testing.T) {
 }
 
 func TestNewTask(t *testing.T) {
-	lh := new(ListHandler)
+	lh := NewHandler()
 	lh.ls = list.Lists{"a": list.New()}
 
 	tsk := task.New("title", "test body")
@@ -158,7 +157,7 @@ func TestNewTask(t *testing.T) {
 }
 
 func TestUpdateTask(t *testing.T) {
-	lh := new(ListHandler)
+	lh := NewHandler()
 	lh.ls = list.Lists{"a": list.New()}
 
 	tsk := task.New("test", "test body")
@@ -184,7 +183,7 @@ func TestUpdateTask(t *testing.T) {
 }
 
 func TestDeleteTask(t *testing.T) {
-	lh := new(ListHandler)
+	lh := NewHandler()
 	lh.ls = list.Lists{"a": list.New()}
 
 	tsk := task.New("test", "test body")

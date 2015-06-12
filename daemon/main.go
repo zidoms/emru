@@ -26,7 +26,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	handler := new(api.ListHandler)
+	handler := api.NewHandler()
 	if http.Serve(l, handler); err != nil {
 		log.Critical(err)
 		panic(err)
