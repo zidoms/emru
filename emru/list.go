@@ -24,7 +24,7 @@ func NewList() *List {
 }
 
 func (l *List) add(t *Task) {
-	for l.Exists(t.ID) {
+	for l.exists(t.ID) {
 		t.ID++
 	}
 	log.Finest("Adding task %v", *t)
@@ -46,7 +46,7 @@ func (l *List) remove(i int) {
 }
 
 func (l *List) Remove(id int) error {
-	i := l.Index(id)
+	i := l.index(id)
 	if i == -1 {
 		return TaskNotFound
 	}
@@ -63,7 +63,7 @@ func (l *List) update(i int, t Task) {
 }
 
 func (l *List) Update(id int, t Task) error {
-	i := l.Index(id)
+	i := l.index(id)
 	if i == -1 {
 		return TaskNotFound
 	}
@@ -72,7 +72,7 @@ func (l *List) Update(id int, t Task) error {
 }
 
 func (l *List) Get(id int) (Task, error) {
-	i := l.Index(id)
+	i := l.index(id)
 	if i == -1 {
 		return Task{}, TaskNotFound
 	}
@@ -96,7 +96,7 @@ func (l *List) Clear() {
 	l.clear()
 }
 
-func (l *List) Exists(id int) bool {
+func (l *List) exists(id int) bool {
 	for _, t := range l.tasks {
 		if t.ID == id {
 			return true
@@ -105,7 +105,7 @@ func (l *List) Exists(id int) bool {
 	return false
 }
 
-func (l *List) Index(id int) int {
+func (l *List) index(id int) int {
 	for i, t := range l.tasks {
 		if t.ID == id {
 			return i

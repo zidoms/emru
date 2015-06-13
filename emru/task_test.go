@@ -26,7 +26,7 @@ func TestToggle(t *testing.T) {
 		{false, true},
 	}
 	for i, test := range tests {
-		test.s.toggle()
+		test.s.Toggle()
 		if test.s != test.expect {
 			t.Errorf("Test %d: Expected %s after toggle but got %s", i, test.expect, test.s)
 		}

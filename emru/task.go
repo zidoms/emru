@@ -26,7 +26,7 @@ func NewTask(title, body string) *Task {
 	}
 }
 
-func (s *Status) toggle() {
+func (s *Status) Toggle() {
 	*s = !(*s)
 }
 

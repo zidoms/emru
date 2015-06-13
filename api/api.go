@@ -41,7 +41,7 @@ func (h *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ListHandler) parseReq() error {
-	log.Debug("Parsing %s", h.req.URL.Path)
+	log.Debug("Parsing %s %s", h.req.Method, h.req.URL.Path)
 	url := strings.TrimRight(h.req.URL.Path, "/")
 
 	if url[:6] != "/lists" {
@@ -51,8 +51,8 @@ func (h *ListHandler) parseReq() error {
 		return h.listsReq()
 	}
 
-	path := strings.Split(url[6:], "/")
-	if len(path) > 3 {
+	path := strings.Split(url[7:], "/")
+	if len(path) > 3 || url[6] != '/' {
 		return invalidReqErr
 	}
 	name := path[0]
