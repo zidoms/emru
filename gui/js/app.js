@@ -1,1 +1,1 @@
-new App.Views.Lists();
+emru = new App.Views.Lists();

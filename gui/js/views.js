@@ -30,6 +30,8 @@ App.Views.Task = Backbone.View.extend({
 		else
 			this.$el.removeClass('done');
 
+		$('#tasks').append(this.$el);
+
 		return this;
 	},
 
@@ -48,7 +50,9 @@ App.Views.List = Backbone.View.extend({
 		'submit #add': 'addTask'
 	},
 
-	initialize: function() {},
+	initialize: function() {
+		if (this.model) this.render();
+	},
 
 	renderAdd: function() {
 		$('#add').toggle();
@@ -56,9 +60,12 @@ App.Views.List = Backbone.View.extend({
 
 	addTask: function() {},
 
-	render: function() {},
+	render: function() {
+		model = this.model;
 
-	unrender: function() {}
+		clearInterval(this.loop);
+		this.loop = setInterval(function() { model.watch(); }, 3000);
+	}
 });
 
 App.Views.Lists = Backbone.View.extend({
@@ -69,16 +76,28 @@ App.Views.Lists = Backbone.View.extend({
 	},
 
 	initialize: function() {
-		this.lists = new App.Collections.Lists();
-		this.list = this.lists.get(0);
+		this.Today = new App.Models.List({name: 'Today'});
+		this.Week = new App.Models.List({name: 'Week'});
+		this.Month = new App.Models.List({name: 'Month'});
 
-		this.render();
-
-		this.listView = new App.Views.List();
-		this.listView.list = this.list;
+		this.listView = new App.Views.List({model: this.Today});
 	},
 
-	changeList: function() {},
+	changeList: function(e) {
+		el = $(e.target);
+		prev = $('li.active');
+		if (prev.text() == el.text()) return;
 
-	render: function() {}
+		prev.removeClass('active');
+		el.parent('li').addClass('active');
+
+		if (el.text() == 'Today')
+			this.listView.model = this.Today;
+		else if (el.text() == 'Week')
+			this.listView.model = this.Week;
+		else
+			this.listView.model = this.Month;
+
+		this.listView.render();
+	}
 });

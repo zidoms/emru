@@ -1,24 +1,11 @@
 App.Collections.Tasks = Backbone.Collection.extend({
-	model: App.Models.Task
-});
-
-App.Collections.Lists = Backbone.Collection.extend({
-	model: App.Models.List,
-	url: 'http://unix:/tmp/emru.sock:/lists',
+	model: App.Models.Task,
 
 	initialize: function() {
-		this.fetch({
-			success: this.fetchSuccess,
-			error: this.fetchError
-		});
+		this.on('add', this.added);
 	},
 
-	fetchSuccess: function(collection, response) {
-		console.log(collection.models);
-	},
-
-	fetchError: function(collection, response) {
-		console.log('collection fetch error:');
-		console.log(response);
+	added: function(task) {
+		new App.Views.Task({model: task}).render();
 	}
 });
