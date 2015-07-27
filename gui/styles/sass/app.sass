@@ -70,6 +70,10 @@ main
 .task
   border-bottom: 1px solid #313639
   +clearfix
+  &.done
+    opacity: 0.4
+    .task-title
+      text-decoration: line-through
 .task-main
   width: 70%
   +float-left
@@ -87,6 +91,7 @@ main
   font-size: 0.9em
   margin-top: 12px
   display: inline-block
+  text-align: center
   li
     display: inline-block
     margin-right: 10px

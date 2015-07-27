@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/http/httputil"
 	"strconv"
 	"strings"
 
@@ -31,6 +32,12 @@ func (h *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.req = r
 	if err := h.parseReq(); err != nil {
 		log.Error(err)
+		if req, err := httputil.DumpRequest(r, true); err != nil {
+			log.Error("error on dumping request")
+		} else {
+			log.Info("%s", req)
+		}
+
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
@@ -41,7 +48,7 @@ func (h *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ListHandler) parseReq() error {
-	log.Debug("Parsing %s %s", h.req.Method, h.req.URL.Path)
+	log.Info("parsing %s %s", h.req.Method, h.req.URL.Path)
 	url := strings.TrimRight(h.req.URL.Path, "/")
 
 	if url[:6] != "/lists" {
@@ -68,6 +75,7 @@ func (h *ListHandler) parseReq() error {
 	if path[1] != "tasks" {
 		return invalidReqErr
 	}
+	log.Info("list %s", name)
 	if len(path) == 2 {
 		return h.tasksReq(l)
 	}
@@ -82,6 +90,7 @@ func (h *ListHandler) parseReq() error {
 func (h *ListHandler) listsReq() (err error) {
 	switch h.req.Method {
 	case "GET":
+		log.Info("get lists")
 		h.data, err = json.Marshal(h.ls)
 		return
 	case "POST":
@@ -92,32 +101,33 @@ func (h *ListHandler) listsReq() (err error) {
 }
 
 func (h *ListHandler) newList() error {
-	decoder := json.NewDecoder(h.req.Body)
-	var nlst struct {
+	log.Info("new list")
+	var newList struct {
 		Name  string       `json:"name"`
 		Tasks []*emru.Task `json:"tasks"`
 	}
-	if err := decoder.Decode(&nlst); err != nil {
+	if err := json.NewDecoder(h.req.Body).Decode(&newList); err != nil {
 		return err
 	}
 
-	if nlst.Name == "" {
+	if newList.Name == "" {
 		return errors.New("can not use empty name")
 	}
-	if _, exist := h.ls[nlst.Name]; exist {
+	if _, exist := h.ls[newList.Name]; exist {
 		return errors.New("this name currently exists")
 	}
 	lst := emru.NewList()
-	for _, tsk := range nlst.Tasks {
-		lst.Add(tsk)
+	for _, task := range newList.Tasks {
+		lst.Add(task)
 	}
-	h.ls[nlst.Name] = lst
+	h.ls[newList.Name] = lst
 	return nil
 }
 
 func (h *ListHandler) listReq(name string) (err error) {
 	switch h.req.Method {
 	case "GET":
+		log.Info("get list %s", name)
 		h.data, err = json.Marshal(h.ls[name])
 		return
 	case "DELETE":
@@ -128,6 +138,7 @@ func (h *ListHandler) listReq(name string) (err error) {
 }
 
 func (h *ListHandler) deleteList(name string) error {
+	log.Info("delete list %s", name)
 	if _, exist := h.ls[name]; !exist {
 		return errors.New("list doesn't exist")
 	}
@@ -138,6 +149,7 @@ func (h *ListHandler) deleteList(name string) error {
 func (h *ListHandler) tasksReq(l *emru.List) (err error) {
 	switch h.req.Method {
 	case "GET":
+		log.Info("get tasks")
 		h.data, err = json.Marshal(l.Tasks())
 		return
 	case "POST":
@@ -148,12 +160,12 @@ func (h *ListHandler) tasksReq(l *emru.List) (err error) {
 }
 
 func (h *ListHandler) newTask(l *emru.List) (err error) {
-	decoder := json.NewDecoder(h.req.Body)
-	tsk := emru.NewTask("", "")
-	if err = decoder.Decode(tsk); err != nil {
+	log.Info("new task")
+	task := emru.NewTask("", "")
+	if err = json.NewDecoder(h.req.Body).Decode(task); err != nil {
 		return
 	}
-	h.data, err = json.Marshal(l.Add(tsk))
+	h.data, err = json.Marshal(l.Add(task))
 	return
 }
 
@@ -164,6 +176,7 @@ func (h *ListHandler) taskReq(l *emru.List, id int) error {
 	case "PUT":
 		return h.updateTask(l, id)
 	case "DELETE":
+		log.Info("remove task %d", id)
 		return l.Remove(id)
 	default:
 		return undefinedMethodErr
@@ -171,6 +184,7 @@ func (h *ListHandler) taskReq(l *emru.List, id int) error {
 }
 
 func (h *ListHandler) task(l *emru.List, id int) error {
+	log.Info("get task %d", id)
 	task, err := l.Get(id)
 	if err != nil {
 		return err
@@ -180,10 +194,10 @@ func (h *ListHandler) task(l *emru.List, id int) error {
 }
 
 func (h *ListHandler) updateTask(l *emru.List, id int) error {
-	tsk := emru.Task{}
-	decoder := json.NewDecoder(h.req.Body)
-	if err := decoder.Decode(&tsk); err != nil {
+	log.Info("update task %d", id)
+	task := emru.Task{}
+	if err := json.NewDecoder(h.req.Body).Decode(&task); err != nil {
 		return err
 	}
-	return l.Update(id, tsk)
+	return l.Update(id, task)
 }

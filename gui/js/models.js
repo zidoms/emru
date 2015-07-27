@@ -5,15 +5,28 @@ App.Models.Task = Backbone.Model.extend({
 		body: '',
 		done: false,
 		created_at: ''
+	},
+
+	url: function() {
+		url = 'http://unix:/tmp/emru.sock:/lists/';
+
+		return url + this.get('list') + '/tasks/' + this.id;
+	},
+
+	toJson: function() {
+		return _.omit(this.attributes, 'list');
 	}
 });
 
 App.Models.List = Backbone.Model.extend({
-	url: 'http://unix:/tmp/emru.sock:/lists/',
-
 	initialize: function() {
-		this.url = this.url + this.get('name');
 		this.tasks = new App.Collections.Tasks();
+	},
+
+	url: function() {
+		url = 'http://unix:/tmp/emru.sock:/lists/';
+
+		return url + this.get('name');
 	},
 
 	watch: function() {
@@ -23,7 +36,9 @@ App.Models.List = Backbone.Model.extend({
 	parse: function(response) {
 		tasks = response.tasks;
 		for (var i = 0; i < tasks.length; i++) {
-			this.tasks.add(new App.Models.Task(tasks[i]));
+			task = new App.Models.Task(tasks[i]);
+			task.set('list', this.get('name'));
+			this.tasks.add(task);
 		}
 	},
 
