@@ -51,14 +51,25 @@ App.Views.List = Backbone.View.extend({
 	},
 
 	initialize: function() {
-		if (this.model) this.render();
+		this.model.on('change', 'render');
+		this.render();
 	},
 
 	renderAdd: function() {
+		$('#add input').val('');
 		$('#add').toggle();
+		$('#add input').focus();
 	},
 
-	addTask: function() {},
+	addTask: function(event) {
+		url = 'http://unix:/tmp/emru.sock:/lists/' + this.model.get('name') + '/tasks';
+		task = new App.Models.Task({title: $('#add input').val()});
+		task.set('list', this.model.get('name'));
+		task.save();
+
+		this.renderAdd();
+		event.preventDefault();
+	},
 
 	render: function() {
 		model = this.model;
