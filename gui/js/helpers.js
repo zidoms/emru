@@ -12,7 +12,7 @@ template = function(id) {
 
 // overriding backbone sync to use request library
 Backbone.sync = function(method, model, options) {
-	var type = methodMap[method];
+	var type = (!options.type) ? methodMap[method] : options.type;
 
 	// Default options, unless specified.
 	_.defaults(options || (options = {}), {});
@@ -21,9 +21,10 @@ Backbone.sync = function(method, model, options) {
 	var params = {type: type, dataType: 'json', headers: {}};
 
 	// Ensure that we have a URL.
-	if (!options.url) {
+	if (!options.url)
 		params.url = _.result(model, 'url') || urlError();
-	}
+	else
+		params.url = options.url;
 
 	// Ensure that we have the appropriate request data.
 	if (!options.data && model && (method === 'create' || method === 'update' || method === 'patch')) {
@@ -32,14 +33,13 @@ Backbone.sync = function(method, model, options) {
 	}
 
 	// Don't process data on a non-GET request.
-	if (params.type !== 'GET') {
+	if (params.type !== 'GET')
 		params.processData = false;
-	}
 
 	request({ url: params.url, json: true, method: params.type, headers: params.headers, body: params.data }, function (err, result, body) {
-		if (err) {
+		if (err)
 			return options.error(err);
-		}
+
 		return options.success(body);
 	});
 };

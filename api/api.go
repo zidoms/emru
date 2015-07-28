@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httputil"
 	"strconv"
@@ -18,12 +17,6 @@ type ListHandler struct {
 	data []byte
 }
 
-var (
-	invalidReqErr      = errors.New("invalid request")
-	undefinedMethodErr = errors.New("undefined method")
-	listNotFoundErr    = errors.New("list not found")
-)
-
 func NewHandler() *ListHandler {
 	return &ListHandler{ls: make(emru.Lists)}
 }
@@ -38,7 +31,13 @@ func (h *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Info("%s", req)
 		}
 
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		if ae, ok := err.(*apiError); ok {
+			http.Error(w, ae.msg, ae.code)
+		} else {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -111,10 +110,10 @@ func (h *ListHandler) newList() error {
 	}
 
 	if newList.Name == "" {
-		return errors.New("can not use empty name")
+		return newApiError(http.StatusBadRequest, "can not use empty name")
 	}
 	if _, exist := h.ls[newList.Name]; exist {
-		return errors.New("this name currently exists")
+		return newApiError(http.StatusBadRequest, "this name currently exists")
 	}
 	lst := emru.NewList()
 	for _, task := range newList.Tasks {
@@ -140,7 +139,7 @@ func (h *ListHandler) listReq(name string) (err error) {
 func (h *ListHandler) deleteList(name string) error {
 	log.Info("delete list %s", name)
 	if _, exist := h.ls[name]; !exist {
-		return errors.New("list doesn't exist")
+		return listNotFoundErr
 	}
 	delete(h.ls, name)
 	return nil

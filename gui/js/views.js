@@ -91,6 +91,11 @@ App.Views.Lists = Backbone.View.extend({
 		this.Week = new App.Models.List({name: 'Week'});
 		this.Month = new App.Models.List({name: 'Month'});
 
+		options = {type: 'post', url: 'http://unix:/tmp/emru.sock:/lists'};
+		this.Today.save({}, options);
+		this.Week.save({}, options);
+		this.Month.save({}, options);
+
 		this.listView = new App.Views.List({model: this.Today});
 	},
 
