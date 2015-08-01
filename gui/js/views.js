@@ -51,6 +51,8 @@ App.Views.List = Backbone.View.extend({
 	},
 
 	initialize: function() {
+		this.before = null;
+
 		this.model.on('change', 'render');
 		this.render();
 	},
@@ -72,10 +74,17 @@ App.Views.List = Backbone.View.extend({
 	},
 
 	render: function() {
+		if (this.before !== null) {
+			tasks = this.before.tasks;
+			for (var i = 0; i < tasks.models.length; i++)
+				tasks.removeModel(i);
+		}
+
+		this.before = this.model;
 		model = this.model;
 
 		clearInterval(this.loop);
-		this.loop = setInterval(function() { model.watch(); }, 3000);
+		this.loop = setInterval(function() { model.watch(); }, 500);
 	}
 });
 
