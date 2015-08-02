@@ -46,7 +46,6 @@ App.Views.List = Backbone.View.extend({
 	events: {
 		'click .add': 'renderAdd',
 		'click .clear': 'clear',
-		'click .search': 'renderSearch',
 		'submit #add': 'addTask'
 	},
 
@@ -85,6 +84,10 @@ App.Views.List = Backbone.View.extend({
 
 		clearInterval(this.loop);
 		this.loop = setInterval(function() { model.watch(); }, 500);
+	},
+
+	clear: function() {
+		this.model.tasks.clear();
 	}
 });
 

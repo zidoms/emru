@@ -13,5 +13,10 @@ App.Collections.Tasks = Backbone.Collection.extend({
 		task = this.get(i);
 		task.view.remove();
 		this.remove(task);
+	},
+
+	clear: function() {
+		while (task = this.first())
+			task.destroy();
 	}
 });
