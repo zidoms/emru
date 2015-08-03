@@ -1,0 +1,9 @@
+[Unit]
+PartOf=emru.service
+
+[Socket]
+ListenStream=/var/run/emru.sock
+SocketMode=0660
+SocketUser=root
+SocketGroup=root
+RemoveOnStop=true

@@ -1,0 +1,6 @@
+[Unit]
+After=network.target emru.socket
+Requires=emru.socket
+
+[Service]
+ExecStart=/usr/bin/emrud
