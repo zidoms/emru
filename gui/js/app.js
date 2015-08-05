@@ -1,1 +1,3 @@
-emru = new App.Views.Lists();
+$(function() {
+	new App.Views.Lists();
+});

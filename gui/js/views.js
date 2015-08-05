@@ -14,7 +14,7 @@ App.Views.Task = Backbone.View.extend({
 	},
 
 	toggleStatus: function(e) {
-		this.model.set('done', !this.model.get('done')).save();
+		this.model.toggle();
 	},
 
 	removeTask: function() {
@@ -22,8 +22,7 @@ App.Views.Task = Backbone.View.extend({
 	},
 
 	render: function() {
-		var template = this.template(this.model.toJSON());
-		this.$el.html(template);
+		this.$el.html(this.template(this.model.toJSON()));
 		if (isRTL(this.model.get('title')))
 			this.$el.addClass('rtl');
 
@@ -42,6 +41,11 @@ App.Views.Task = Backbone.View.extend({
 	}
 });
 
+// TODO:
+// listen to collection if a tasks is added or etc
+// cache elements like $('#add input') and etc
+// listen to collection change filter all etc
+// trim new task title
 App.Views.List = Backbone.View.extend({
 	el: $('#list'),
 
