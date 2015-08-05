@@ -24,6 +24,8 @@ App.Views.Task = Backbone.View.extend({
 	render: function() {
 		var template = this.template(this.model.toJSON());
 		this.$el.html(template);
+		if (isRTL(this.model.get('title')))
+			this.$el.addClass('rtl');
 
 		if (this.model.get('done') === true)
 			this.$el.addClass('done');
@@ -46,6 +48,7 @@ App.Views.List = Backbone.View.extend({
 	events: {
 		'click .add': 'renderAdd',
 		'click .clear': 'clear',
+		'keyup input[name="task"]': 'keyup',
 		'submit #add': 'addTask'
 	},
 
@@ -60,6 +63,12 @@ App.Views.List = Backbone.View.extend({
 		$('#add input').val('');
 		$('#add').toggle();
 		$('#add input').focus();
+	},
+
+	keyup: function(event) {
+		ch = $('#add input').val();
+		if (isRTL(ch))
+			$('#add input').attr('dir', 'rtl');
 	},
 
 	addTask: function(event) {

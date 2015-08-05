@@ -53,6 +53,16 @@ var methodMap = {
 	'read': 'GET'
 };
 
+function isRTL(str) {
+	var regex = new RegExp('[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]', 'g');
+	str = str.replace(/\s/g, '');
+
+	res = str.match(regex);
+	if (res !== null && res.length/str.length > 0.5)
+		return true;
+	return false;
+}
+
 // dev
 var gulp = require('gulp');
 gulp.task('reload', function () {
