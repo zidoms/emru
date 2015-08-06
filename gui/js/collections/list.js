@@ -1,22 +1,4 @@
-App.Models.Task = Backbone.Model.extend({
-	defaults: {
-		title: '',
-		done: 'false'
-	},
-
-	url: function() {
-		url = 'http://unix:/tmp/emru.sock:/lists/' + this.get('list') + '/tasks/';
-		if (typeof this.get('id') !== 'undefined')
-			url += this.get('id');
-
-		return url;
-	},
-
-	toggle: function() {
-		this.save({done: !this.get('done')});
-	}
-});
-
+// Merge list model and list collection
 App.Models.List = Backbone.Model.extend({
 	initialize: function() {
 		this.tasks = new App.Collections.Tasks();
@@ -49,4 +31,27 @@ App.Models.List = Backbone.Model.extend({
 		console.log('model fetch err:');
 		console.log(response);
 	},
+});
+
+App.Collections.Tasks = Backbone.Collection.extend({
+	model: App.Models.Task,
+
+	initialize: function() {
+		this.on('add', this.added);
+	},
+
+	added: function(task) {
+		task.view = new App.Views.Task({model: task}).render();
+	},
+
+	removeModel: function(i) {
+		task = this.get(i);
+		task.view.remove();
+		this.remove(task);
+	},
+
+	clear: function() {
+		while (task = this.first())
+			task.destroy();
+	}
 });
