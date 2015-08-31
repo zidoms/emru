@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	// TODO: sock location
 	l, err := net.Listen("unix", "/tmp/emru.sock")
 	if err != nil {
 		log.Critical(err)

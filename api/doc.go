@@ -1,7 +1,7 @@
 // Desired api
 //
-// GET	/lists	all lists
-// POST	/lists	new list
+// GET	/lists	        all lists
+// POST	/lists	        new list
 // GET	/lists/:name	list
 // DEL	/lists/:name	delete list
 //
