@@ -5,9 +5,9 @@ import (
 )
 
 var (
-	ShowLists = cli.Command{
+	Lists = cli.Command{
 		Name:  "lists",
-		Usage: "show all todo lists",
+		Usage: "show all lists",
 		Action: func(c *cli.Context) {
 			ls, err := getLists()
 			if err != nil {
@@ -16,6 +16,10 @@ var (
 			}
 
 			printLists(ls)
+		},
+		Subcommands: []cli.Command{
+			AddList,
+			RemoveList,
 		},
 	}
 
@@ -32,12 +36,12 @@ var (
 				perr("Error on creating new list", err)
 			}
 
-			white("\n\nCreated new " + name + " list successfully\n")
+			white("\n\nCreated new list '" + name + "' successfully\n")
 		},
 	}
 
 	RemoveList = cli.Command{
-		Name:  "remove",
+		Name:  "rm",
 		Usage: "remove list",
 		Action: func(c *cli.Context) {
 			name := c.Args().First()

@@ -15,14 +15,12 @@ func main() {
 	// app.Usage = ""
 	// app.Version = ""
 	app.Commands = []cli.Command{
-		cmd.ShowLists,
-		cmd.AddList,
-		cmd.RemoveList,
+		cmd.Lists,
+		cmd.ShowTasks,
 		cmd.AddTask,
 		cmd.ToggleTask,
 		cmd.RemoveTask,
 	}
-	app.Action = cmd.Default
 
 	app.Run(os.Args)
 }
