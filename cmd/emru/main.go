@@ -11,9 +11,8 @@ func main() {
 	app := cli.NewApp()
 	app.Email = "zidom72@gmail.com"
 	app.Name = "emru"
-	// TODO
-	// app.Usage = ""
-	// app.Version = ""
+	app.Usage = "cli interface for emru"
+	app.Version = "0.3.0-alpha"
 	app.Commands = []cli.Command{
 		cmd.Lists,
 		cmd.ShowTasks,

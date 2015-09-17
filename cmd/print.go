@@ -44,13 +44,13 @@ func printTasks(ts []emru.Task, list string) {
 }
 
 func printTask(t emru.Task) {
-	white(grow(string(t.ID), size("ID")) + " ")
+	white(grow(strconv.Itoa(t.ID), size("ID")) + " ")
 	white(grow(t.Title, size("Title")) + " ")
 	white(grow(t.Body, size("Body")) + " ")
 	if t.Done {
-		green(grow("✔", size("Done")))
+		white(grow("✔", size("Done")))
 	} else {
-		red(grow("✘", size("Done")))
+		white(grow("✘", size("Done")))
 	}
 }
 
@@ -87,15 +87,15 @@ func size(key string) int {
 	case "Title":
 		return 24
 	case "Body":
-		return 72
+		return 40
 	case "Done":
-		return 8
+		return 6
 	}
 	return 16
 }
 
 func grow(s string, to int) string {
-	for i := 0; i < to-len(s); i++ {
+	for len(s) < to {
 		s += " "
 	}
 	return s
