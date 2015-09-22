@@ -1,6 +1,9 @@
-[Unit]
-After=network.target emru.socket
-Requires=emru.socket
-
 [Service]
+ExecStartPre=/bin/rm -f /tmp/emru.sock
 ExecStart=/usr/bin/emrud
+User=mohammad
+Group=mohammad
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

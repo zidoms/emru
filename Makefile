@@ -17,8 +17,7 @@ binary:
 	install -m 755 -p dist/emru /usr/bin/emru
 
 systemd:
-	install -m 644 -p dist/systemd/emru.service /etc/systemd/system/emru.service
-	install -m 644 -p dist/systemd/emru.socket /etc/systemd/system/emru.socket
+	install -m 644 -p dist/systemd/emru.service /usr/lib/systemd/system/emru.service
 
 cli_install:
 	go install github.com/zoli/emru/cmd/emru
@@ -28,3 +27,8 @@ test:
 
 clean:
 	rm -r dist/emrud dist/emru
+	rm ${GOPATH}/bin/emru
+
+uninstall:
+	rm /usr/bin/emrud /usr/bin/emru
+	rm /usr/lib/systemd/system/emru.service
