@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=
+Type=Application
+Name=Emru
+GenericName=
+Comment=
+Exec=/usr/lib/emru/emrugui
+Terminal=
+Icon=
+Categories=Application;Productivity;

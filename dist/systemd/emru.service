@@ -1,6 +1,6 @@
 [Service]
 ExecStartPre=/bin/rm -f /tmp/emru.sock
-ExecStart=/usr/bin/emrud
+ExecStart=/usr/lib/emru/emrud
 User=mohammad
 Group=mohammad
 Restart=on-failure
